@@ -6,6 +6,33 @@
     <title>MAT-J - MSFS Formation Flight Team</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Firebase Config provided by environment
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // Firestore Paths (Rule 1)
+        const chatCollectionPath = `/artifacts/${appId}/public/data/messages`;
+
+        window.chatService = {
+            db,
+            auth,
+            chatCollectionPath,
+            addDoc,
+            collection,
+            query,
+            onSnapshot,
+            serverTimestamp
+        };
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Exo+2:wght@200;400;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap');
 
@@ -216,7 +243,7 @@
                     <a href="javascript:void(0)" onclick="showPage('landing', 'members')" class="hover:text-blue-400 transition text-gray-200">MEMBERS</a>
                     <a href="javascript:void(0)" onclick="showPage('landing', 'signals')" class="hover:text-amber-400 transition text-gray-100">合図一覧</a>
                     <a href="javascript:void(0)" onclick="showPage('landing', 'maneuvers')" class="hover:text-blue-400 transition text-gray-200">演目一覧</a>
-                    <a href="javascript:void(0)" onclick="showPage('addons')" class="hover:text-blue-400 transition text-gray-200">アドオン</a>
+                    <a href="javascript:void(0)" onclick="showPage('addons')" class="hover:text-blue-400 transition text-gray-200">アドオン一覧</a>
                     <a href="javascript:void(0)" onclick="showPage('recruitment')" class="text-emerald-400 font-black hover:text-emerald-300 transition">入隊/見学</a>
                 </div>
 
@@ -234,7 +261,7 @@
             <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-amber-400" onclick="showPage('landing', 'signals'); closeMenu()">合図一覧</a>
             <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-gray-200" onclick="showPage('landing', 'maneuvers'); closeMenu()">演目一覧</a>
             <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-indigo-400" onclick="showPage('links'); closeMenu()">外部リンク</a>
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-gray-200" onclick="showPage('addons'); closeMenu()">アドオン</a>
+            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-gray-200" onclick="showPage('addons'); closeMenu()">アドオン一覧</a>
             <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-emerald-400" onclick="showPage('landing', 'recruitment'); closeMenu()">入隊/見学</a>
             <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-rose-400" onclick="openChatLogin(); closeMenu()">CHAT ROOM</a>
         </div>
@@ -274,7 +301,7 @@
                             <i class="fas fa-book-open"></i> 隊員向け基本
                         </a>
                         <a href="javascript:void(0)" onclick="showPage('addons')" class="hero-btn btn-white">
-                            <i class="fas fa-tools"></i> アドオン
+                            <i class="fas fa-tools"></i> アドオン一覧
                         </a>
                         <button onclick="showPage('links')" class="hero-btn btn-indigo">
                             <i class="fas fa-external-link-alt"></i> 外部リンク
@@ -462,7 +489,6 @@
                             MAT-Jメンバーであり開発者。Spiticeさんと一緒にゲーム内MODを開発されています。
                         </p>
                         <div class="bg-black/20 p-4 rounded-lg mb-8 border border-white/10">
-                            <p class="text-[10px] text-emerald-400 font-bold uppercase mb-2 tracking-widest">Latest Development</p>
                             <a href="http://fxjiro.blog117.fc2.com/blog-entry-265.html" target="_blank" class="text-xs text-blue-400 hover:underline break-all block">
                                 最新開発ページ(ブログ) <i class="fas fa-external-link-alt ml-1"></i>
                             </a>
@@ -504,7 +530,7 @@
                     <button onclick="showPage('landing')" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
                         <i class="fas fa-arrow-left"></i>
                     </button>
-                    <h2 class="text-3xl font-normal tracking-widest uppercase text-white" style="font-family: 'Cinzel', serif;">MAT-J ADDONS</h2>
+                    <h2 class="text-3xl font-normal tracking-widest uppercase text-white" style="font-family: 'Cinzel', serif;">MAT-J アドオン一覧</h2>
                 </div>
 
                 <div class="glass-card p-16 text-center border-dashed border-2 border-white/20 bg-white/[0.04]">
@@ -516,7 +542,7 @@
                         現在メンテナンス中です。ご不便おかけいたします
                     </p>
                 </div>
-            </section>
+            </div>
         </main>
 
         <!-- CHAT ROOM VIEW -->
@@ -533,16 +559,14 @@
                     <div class="flex justify-between items-center border-b border-white/10 pb-4 mb-4">
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <span class="text-xs font-bold uppercase tracking-widest text-emerald-400">Online</span>
+                            <span class="text-xs font-bold uppercase tracking-widest text-emerald-400">Realtime Sync Active</span>
                         </div>
                         <div class="text-[10px] text-gray-400 uppercase tracking-widest" id="chat-user-display">User: Guest</div>
                     </div>
 
                     <!-- チャット履歴 -->
-                    <div id="chat-window" class="flex-grow overflow-y-auto pr-2 custom-scrollbar">
-                        <div class="text-center py-10">
-                            <p class="text-xs text-gray-500 uppercase tracking-[0.3em]">No messages yet.</p>
-                        </div>
+                    <div id="chat-window" class="flex-grow overflow-y-auto pr-2 custom-scrollbar flex flex-col gap-2">
+                        <!-- Firestore messages will appear here -->
                     </div>
 
                     <!-- 入力エリア -->
@@ -628,8 +652,11 @@
             showPage('landing', sectionId);
         }
 
-        /* --- AUTH & CHAT LOGIC --- */
+        /* --- AUTH & CLOUD CHAT LOGIC --- */
         let chatUserName = "Pilot";
+        let isChatInitialized = false;
+        let chatUnsubscribe = null;
+
         const authModal = document.getElementById('auth-modal');
         const authStep1 = document.getElementById('auth-step-1');
         const authStep2 = document.getElementById('auth-step-2');
@@ -662,46 +689,82 @@
             }
         }
 
-        function enterChatRoom() {
+        async function initRealtimeChat() {
+            if (isChatInitialized) return;
+            const { auth, db, chatCollectionPath, query, collection, onSnapshot, signInAnonymously } = window.chatService;
+
+            // Wait for auth first (Rule 3)
+            await signInAnonymously(auth);
+            
+            const q = query(collection(db, ...chatCollectionPath.split('/').filter(p => p)));
+            
+            chatUnsubscribe = onSnapshot(q, (snapshot) => {
+                const messages = [];
+                snapshot.forEach((doc) => {
+                    messages.push(doc.data());
+                });
+                
+                // Sort in memory (Rule 2)
+                messages.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+                
+                renderChat(messages);
+            }, (error) => {
+                console.error("Chat sync error:", error);
+            });
+
+            isChatInitialized = true;
+        }
+
+        function renderChat(messages) {
+            chatWindow.innerHTML = messages.length === 0 ? 
+                `<div class="text-center py-10"><p class="text-xs text-gray-500 uppercase tracking-[0.3em]">No messages yet.</p></div>` : "";
+            
+            messages.forEach(msg => {
+                const date = msg.createdAt ? new Date(msg.createdAt.seconds * 1000) : new Date();
+                const timeStr = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+                
+                const msgDiv = document.createElement('div');
+                msgDiv.className = "mb-4 animate-fadeIn";
+                msgDiv.innerHTML = `
+                    <div class="chat-name">${msg.name}</div>
+                    <div class="chat-message">${msg.text}</div>
+                    <div class="chat-time">${timeStr}</div>
+                `;
+                chatWindow.appendChild(msgDiv);
+            });
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        async function enterChatRoom() {
             const name = document.getElementById('auth-name').value.trim();
             if (!name) return;
             chatUserName = name;
             document.getElementById('chat-user-display').textContent = `User: ${chatUserName}`;
             closeAuthModal();
             showPage('chat');
-            // ウェルカムメッセージ
-            addMessageToChat("System", `Welcome, ${chatUserName}! 隊員専用チャットへようこそ。`);
+            
+            // Start sync
+            await initRealtimeChat();
         }
 
-        function sendChatMessage() {
-            const msg = chatInput.value.trim();
-            if (!msg) return;
-            addMessageToChat(chatUserName, msg);
-            chatInput.value = "";
-        }
-
-        function addMessageToChat(name, text) {
-            const now = new Date();
-            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+        async function sendChatMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
             
-            const msgDiv = document.createElement('div');
-            msgDiv.className = name === "System" ? "text-center mb-4 italic opacity-50 text-[10px]" : "mb-4 animate-fadeIn";
+            const { db, chatCollectionPath, addDoc, collection, serverTimestamp } = window.chatService;
             
-            if (name === "System") {
-                msgDiv.innerHTML = `<p>${text}</p>`;
-            } else {
-                msgDiv.innerHTML = `
-                    <div class="chat-name">${name}</div>
-                    <div class="chat-message">${text}</div>
-                    <div class="chat-time">${timeStr}</div>
-                `;
+            try {
+                await addDoc(collection(db, ...chatCollectionPath.split('/').filter(p => p)), {
+                    name: chatUserName,
+                    text: text,
+                    createdAt: serverTimestamp()
+                });
+                chatInput.value = "";
+            } catch (e) {
+                console.error("Error sending message: ", e);
             }
-            
-            chatWindow.appendChild(msgDiv);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
-        // Enterキーで送信
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendChatMessage();
         });

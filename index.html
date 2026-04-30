@@ -175,30 +175,6 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Youtube Section Specific Styles */
-        .yt-card {
-            @apply relative overflow-hidden rounded-lg border border-white/10 bg-white/5 transition-all duration-300 flex-shrink-0 w-[140px] md:w-full snap-start;
-        }
-        .yt-card:hover {
-            @apply -translate-y-1 bg-white/10 border-rose-500/30;
-        }
-        .yt-badge {
-            @apply absolute top-1 right-1 px-1.5 py-0.5 bg-rose-600 text-white text-[7px] font-black tracking-tighter rounded-sm animate-pulse z-10;
-        }
-        .yt-shorts-badge {
-            @apply absolute bottom-1 right-1 px-1 bg-black/60 text-white text-[7px] font-bold rounded-sm flex items-center gap-0.5;
-        }
-
-        /* 横スクロール対応のフィード */
-        #youtube-feed {
-            @apply flex md:grid md:grid-cols-4 gap-3 px-4 py-2 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide;
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-        #youtube-feed::-webkit-scrollbar {
-            display: none; /* Chrome, Safari and Opera */
-        }
     </style>
 </head>
 <body class="sky-bg">
@@ -296,23 +272,6 @@
                         <a href="https://www.youtube.com/@mat-j_msfs_acrobat_team_japan" target="_blank" class="hero-btn btn-rose">
                             <i class="fab fa-youtube"></i> YouTube
                         </a>
-                    </div>
-                </div>
-
-                <!-- LATEST YOUTUBE UPDATES -->
-                <div class="container mx-auto max-w-5xl mb-16 fade-in">
-                    <h2 class="text-[9px] font-black tracking-[0.5em] text-rose-500 mb-6 uppercase flex items-center justify-center gap-3">
-                        <span class="h-[1px] w-6 bg-rose-500/20"></span>
-                        Latest YouTube Updates!
-                        <span class="h-[1px] w-6 bg-rose-500/20"></span>
-                    </h2>
-                    <!-- フィードエリア -->
-                    <div id="youtube-feed" class="pb-4">
-                        <!-- Dynamic Content -->
-                    </div>
-                    <!-- スマホ向け案内 -->
-                    <div class="md:hidden text-[7px] text-gray-500 font-bold uppercase tracking-widest mt-2 animate-pulse">
-                        <i class="fas fa-arrows-left-right"></i> Scroll to see more
                     </div>
                 </div>
             </section>
@@ -652,14 +611,6 @@
 
         const members = rawMembers.map(m => ({ ...m, role: `MAT-J Member / ${m.role}` }));
 
-        // 最新動画データ（Shorts対応: isShortフラグを追加）
-        const latestVideos = [
-            { member: "G隊長", videoId: "bO1fSRE5qE8", title: "MAT-J 訓練動画", isShort: false },
-            { member: "ｼﾅﾓｿ", videoId: "84p96p_vKNo", title: "Shorts動画テスト", isShort: true },
-            { member: "Izumigame", videoId: "G7I2T5p9w7o", title: "アクロ演目解説", isShort: false },
-            { member: "ゆーす", videoId: "vM8Y6vNf0q4", title: "航空祭賑やかに！", isShort: false }
-        ];
-
         const maneuvers = [
             { id: "m1", name: "離陸滑走開始", rw: "平行", smk: "無し", signal: "エアブレーキ開 ⇒ 閉", proc: "フラップ1段下げ、ホイールブレーキオン後スロットル92%に合わせ、リーダーのエアブレーキが閉まった瞬間にブレーキオフする。パーキングブレーキオンの状態でリーダーを方向を見て、エアブレーキが閉じた瞬間にブレーキリリースをする。", video: "takeoffbrake.mp4" },
             { id: "m2", name: "ダーティーローパス", rw: "直角", smk: "白SMK", signal: "離陸後ギア・フラップ下げのままデルタで進入", proc: "ローパス後のリーダーのSMKオフ・ギアアップにタイミングを合わせる。ギアアップ後すぐにスロットルを80%に落トス。" },
@@ -710,22 +661,6 @@
         }
 
         function init() {
-            // Render YouTube Feed
-            const ytFeed = document.getElementById('youtube-feed');
-            if(ytFeed) {
-                ytFeed.innerHTML = latestVideos.map(v => `
-                    <a href="${v.isShort ? `https://www.youtube.com/shorts/${v.videoId}` : `https://www.youtube.com/watch?v=${v.videoId}`}" target="_blank" class="yt-card group">
-                        <div class="yt-badge">NEW</div>
-                        <img src="https://img.youtube.com/vi/${v.videoId}/mqdefault.jpg" class="w-full h-auto object-cover opacity-80 group-hover:opacity-100 transition-opacity">
-                        ${v.isShort ? `<div class="yt-shorts-badge"><i class="fab fa-youtube text-[6px]"></i> Shorts</div>` : ''}
-                        <div class="p-2">
-                            <div class="text-[7px] text-rose-400 font-bold uppercase tracking-widest mb-0.5">${v.member}</div>
-                            <div class="text-[9px] text-gray-200 font-medium line-clamp-1 truncate">${v.title}</div>
-                        </div>
-                    </a>
-                `).join('');
-            }
-
             const memberList = document.getElementById('member-list');
             if(memberList) {
                 memberList.innerHTML = members.map(m => {

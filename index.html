@@ -163,6 +163,20 @@
             justify-content: center;
         }
         .modal.active { display: flex; }
+
+        .image-placeholder {
+            @apply w-full bg-white/5 border border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center p-8 my-6 text-gray-500 text-xs tracking-widest uppercase;
+        }
+
+        @keyframes emergency-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); border-color: rgba(239, 68, 68, 1); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); border-color: rgba(239, 68, 68, 0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); border-color: rgba(239, 68, 68, 1); }
+        }
+        .emergency-pulse {
+            animation: emergency-pulse 2s infinite;
+            background: rgba(127, 29, 29, 0.3) !important;
+        }
     </style>
 </head>
 <body class="sky-bg">
@@ -177,14 +191,15 @@
     <div id="main-content">
         <header class="fixed top-0 w-full z-[100] glass-card rounded-none border-none border-b border-white/5">
             <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <div class="flex items-baseline gap-3">
+                <div class="flex items-center gap-3">
                     <span class="text-2xl font-black italic tracking-tighter text-white">MAT-J</span>
-                    <span class="hidden sm:block text-[9px] font-medium tracking-[0.3em] text-gray-400 uppercase">MSFS Acrobat Team Japan</span>
+                    <span class="text-[8px] sm:text-[9px] font-medium tracking-[0.2em] sm:tracking-[0.3em] text-gray-400 uppercase border-l border-white/20 pl-3">MSFS Acrobat Team Japan</span>
                 </div>
                 
                 <div class="hidden lg:flex space-x-8 text-[10px] font-bold tracking-widest">
                     <a href="#home" class="hover:text-blue-400 transition text-gray-300">HOME</a>
                     <a href="#about" class="hover:text-blue-400 transition text-gray-300">ABOUT</a>
+                    <a href="#guidelines" class="hover:text-blue-400 transition text-gray-300">隊員向け基本</a>
                     <a href="#members" class="hover:text-blue-400 transition text-gray-300">MEMBERS</a>
                     <a href="#signals" class="hover:text-amber-400 transition text-gray-100">合図一覧</a>
                     <a href="#maneuvers" class="hover:text-blue-400 transition text-gray-300">演目一覧</a>
@@ -201,10 +216,12 @@
         <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-[105] flex flex-col items-center justify-center space-y-8 lg:hidden">
             <a href="#home" class="text-xl font-bold tracking-widest text-gray-300" onclick="closeMenu()">HOME</a>
             <a href="#about" class="text-xl font-bold tracking-widest text-gray-300" onclick="closeMenu()">ABOUT</a>
+            <a href="#guidelines" class="text-xl font-bold tracking-widest text-blue-400" onclick="closeMenu()">隊員向け基本</a>
             <a href="#members" class="text-xl font-bold tracking-widest text-gray-300" onclick="closeMenu()">MEMBERS</a>
             <a href="#signals" class="text-xl font-bold tracking-widest text-amber-400" onclick="closeMenu()">合図一覧</a>
             <a href="#maneuvers" class="text-xl font-bold tracking-widest text-gray-300" onclick="closeMenu()">演目一覧</a>
             <a href="#addons" class="text-xl font-bold tracking-widest text-gray-300" onclick="closeMenu()">アドオン</a>
+            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-indigo-400" onclick="toggleModal('links-modal'); closeMenu();">外部リンク</a>
             <a href="#recruitment" class="text-xl font-bold tracking-widest text-emerald-400" onclick="closeMenu()">入隊/見学</a>
         </div>
 
@@ -234,6 +251,9 @@
                     <a href="#maneuvers" class="hero-btn btn-white">
                         <i class="fas fa-plane"></i> 演目一覧
                     </a>
+                    <a href="#guidelines" class="hero-btn btn-blue">
+                        <i class="fas fa-book-open"></i> MAT-J隊員向け基本動作
+                    </a>
                     <a href="#addons" class="hero-btn btn-white">
                         <i class="fas fa-tools"></i> アドオン一覧
                     </a>
@@ -249,6 +269,82 @@
                     <a href="https://www.youtube.com/@mat-j_msfs_acrobat_team_japan" target="_blank" class="hero-btn btn-rose">
                         <i class="fab fa-youtube"></i> YouTube
                     </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- GUIDELINES SECTION -->
+        <section id="guidelines" class="py-24 px-6 bg-white/[0.01]">
+            <div class="container mx-auto max-w-4xl">
+                <h2 class="text-2xl font-normal tracking-widest border-l-4 border-blue-500 pl-4 mb-10 uppercase text-white" style="font-family: 'Cinzel', serif;">MAT-J BASIC OPERATIONS</h2>
+                
+                <div class="space-y-12">
+                    <div class="glass-card p-8 md:p-12 leading-relaxed">
+                        <div class="space-y-6 text-sm md:text-base text-gray-300 font-light">
+                            <p>MAT-Jは航空自衛隊アクロバットチーム「ブルーインパルス」を参考とし、演目を設定しております。その為実践に近い計器飛行を取り入れております。MAT-Jの最高難易度技はスタークロスです。</p>
+                            <p>そしてなんとMAT-Jは<span class="text-white font-bold">ボイスチャットを一切使用しません。</span></p>
+                            
+                            <div class="pt-6 border-t border-white/5">
+                                <h3 class="text-xl font-bold text-white mb-4">使用機体：MB-339</h3>
+                                <p>ゲーム内では非常に操作性がよく2020/2024で幅広く使われております。</p>
+                                <p>現在ではイタリア空軍フレッチェトリコローリとチリ空軍が採用。今でも現役で空を飛んでおります。</p>
+                                
+                                <div class="image-placeholder">
+                                    <i class="fas fa-image text-3xl mb-2 opacity-20"></i>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-8 md:p-12 leading-relaxed">
+                        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                            <span class="w-1.5 h-6 bg-blue-500"></span>
+                            MAT-Jが取り入れている編隊飛行隊形
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                            <div class="bg-white/5 p-4 rounded text-center text-xs tracking-widest uppercase">ダイヤモンド隊形</div>
+                            <div class="bg-white/5 p-4 rounded text-center text-xs tracking-widest uppercase">デルタ隊形</div>
+                            <div class="bg-white/5 p-4 rounded text-center text-xs tracking-widest uppercase">トレイル隊形</div>
+                            <div class="bg-white/5 p-4 rounded text-center text-xs tracking-widest uppercase">エシュロン隊形</div>
+                            <div class="bg-white/5 p-4 rounded text-center text-xs tracking-widest uppercase">傘型(V字)隊形</div>
+                        </div>
+                        
+                        <div class="space-y-4 text-sm text-gray-300 font-light">
+                            <p>MAT-Jでは動いた人の早い者順でその日の機体番号が決まります。</p>
+                            <p>中でも<span class="text-white font-bold">4番機は初心者に最適です。</span>しかし編隊隊形変化が多い番号でもあります。</p>
+                            <p>飛んでいる最中のMAT-J集団に途中合流する場合は一番最後尾番号または空いているポジションへ入ります。</p>
+                        </div>
+
+                        <div class="image-placeholder">
+                            <i class="fas fa-image text-3xl mb-2 opacity-20"></i>
+                            
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="glass-card p-8">
+                            <h3 class="text-lg font-bold text-white mb-4">演目進入ルート</h3>
+                            <p class="text-sm text-gray-400 font-light mb-4">MAT-Jでは各演目に進入角度が決まっております。</p>
+                            <div class="image-placeholder h-40">
+                                
+                            </div>
+                        </div>
+                        <div class="glass-card p-8">
+                            <h3 class="text-lg font-bold text-white mb-4">離陸滑走ルール</h3>
+                            <p class="text-sm text-gray-400 font-light mb-4">ボイスチャットを使用しないため、離陸にも独自のルールを設けております。</p>
+                            <div class="image-placeholder h-40">
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-8">
+                        <h3 class="text-lg font-bold text-white mb-4">地上タキシングルール</h3>
+                        <div class="image-placeholder h-64">
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -269,7 +365,6 @@
                 </div>
 
                 <div class="space-y-6">
-                    <!-- テツたるさんを上に移動 -->
                     <div class="glass-card p-6 border-l-4 border-emerald-500/50 bg-white/5">
                         <h3 class="text-xl font-bold mb-3 text-white">テツたるさん</h3>
                         <p class="text-gray-300 text-sm leading-relaxed mb-4">
@@ -288,7 +383,6 @@
                         </div>
                     </div>
 
-                    <!-- ゆーすさんを下に移動 -->
                     <div class="glass-card p-6 border-l-4 border-indigo-500/50 bg-white/5">
                         <h3 class="text-xl font-bold mb-3 text-white">ゆーすさん</h3>
                         <p class="text-gray-300 text-sm leading-relaxed mb-6">
@@ -478,37 +572,37 @@
         const members = rawMembers.map(m => ({ ...m, role: `MAT-J Member / ${m.role}` }));
 
         const maneuvers = [
-            { id: "m1", name: "離陸滑走開始", rw: "平行", smk: "無し", signal: "エアブレーキ開 ⇒ 閉", proc: "フラップ1段下げ、ホイールブレーキオン後スロットル92%に合わせ、リーダーのエアブレーキが閉まった瞬間にブレーキオフする" },
-            { id: "m2", name: "ダーティーローパス", rw: "直角", smk: "白SMK", signal: "離陸後ギア・フラップ下げのままデルタで進入", proc: "ローパス後のリーダーのSMKオフ・ギアアップにタイミングを合わせる。ギアアップ後すぐにスロットルを80%に落とす。" },
+            { id: "m1", name: "離陸滑走開始", rw: "平行", smk: "無し", signal: "エアブレーキ開 ⇒ 閉", proc: "フラップ1段下げ、ホイールブレーキオン後スロットル92%に合わせ、リーダーのエアブレーキが閉まった瞬間にブレーキオフする。パーキングブレーキオンの状態でリーダーを方向を見て、エアブレーキが閉じた瞬間にブレーキリリースをする。", video: "takeoffbrake.mp4" },
+            { id: "m2", name: "ダーティーローパス", rw: "直角", smk: "白SMK", signal: "離陸後ギア・フラップ下げのままデルタで進入", proc: "ローパス後のリーダーのSMKオフ・ギアアップにタイミングを合わせる。ギアアップ後すぐにスロットルを80%に落トス。" },
             { id: "m3", name: "ファンブレーク", rw: "斜行", smk: "無し", signal: "無し、リーダー旋回開始で密集デルタへ", proc: "間1mの密集デルタで進入、3G右旋回で右後方へ抜ける。その際スロットルはリーダーと同期させる（基本いじらない）" },
             { id: "m4", name: "バレルロール", rw: "斜め", smk: "白SMK", signal: "デルタでRW手前から白SMKオン上昇開始", proc: "リーダーとの位置合わせに集中。スロットルは上昇時100%付近、降下時80%付近をリーダーと合わせる。" },
             { id: "m5", name: "上方開花", rw: "直角", smk: "白SMK", signal: "RW手前で白SMKオン デルタ進入", proc: "垂直上昇から指定の方向へ開く。開いた後360度ロールし水平飛行に戻る。" },
             { id: "m6", name: "鬼灯（ほおずき）", rw: "直角", smk: "無し", signal: "周回中に赤・緑SMKの交互出し デルタ進入", proc: "垂直上昇時に赤SMKオン。頂点付近で緑に変更し、降下開始で指定方向に散開。地上付近で白SMKに変更。" },
-            { id: "m7", name: "ボントンロール", rw: "斜め", smk: "白SMK", signal: "周回中に赤SMK+ロール合図", proc: "RW直上のリーダーSMKオフから0.5秒後SMKオフ、1秒後に右1回転ロール。ロール後は全機再度白SMKをオンにする。" },
+            { id: "m7", name: "ボントンロール", rw: "斜め", smk: "白SMK", signal: "周回中に赤SMK+ロール合図", proc: "RW直上のリーダーSMKオフから0.5秒後SMKオフ、1秒後に右1回転ロール。ロール後は全機再度白SMKをオンにする。", image: "" },
             { id: "m8", name: "ワイドトゥデルタループ", rw: "直角", smk: "白SMK", signal: "前のボントンとセット", proc: "ワイドV字で進入しループ上昇しつつ通常V字デルタへ変形。頂点で全機通常デルタを完成させる。" },
             { id: "m9", name: "反転レインフォール", rw: "直角", smk: "緑SMK", signal: "周回中に緑SMK点滅ありは反転RF", proc: "下りの垂直姿勢のタイミングで各機180度ロールし、リーダーから離れる方向に散開。地上付近で再度180度ロールし水平へ。" },
             { id: "m10", name: "ループ", rw: "平行", smk: "白SMK", signal: "平行進入+白SMK", proc: "ループ回数はリーダーの気分次第。頂点付近でのスロットル調整が鍵（75～85%前後）。" },
-            { id: "m11", name: "パーティカルキューピット", rw: "直角", smk: "無し", signal: "周回中に赤の長SMK+エアブレーキ開", proc: "リーダー合図で2列縦隊へ隊形変更、RW上で白SMKオン。垂直上昇しハートを描く。最後尾2機が矢を描く。" },
+            { id: "m11", name: "バーティカルキューピッド", rw: "直角", smk: "無し", signal: "周回中に赤の長SMK+エアブレーキ開", proc: "リーダー合図で2列縦隊へ隊形変更、RW上で白SMKオン. 垂直上昇しハートを描く。最後尾2機が矢を描く。", image: "" },
             { id: "m12", name: "スタークロス", rw: "南⇒北", smk: "白", signal: "周回中に黄の長SMK、真南から真北方向へV字デルタで進入", proc: "下方開花から指定方向に散開。リーダーの「スモーク」合図で白SMKを出し、各機交差して星を描く。" },
             { id: "m13", name: "レベルオープナー", rw: "直角", smk: "白", signal: "周回中に緑の長SMK+ラダーで尻振り", proc: "各列15度刻みで外側に水平に開く。合図から3秒後に左側、その1秒後に右側が順に展開。" },
             { id: "m14", name: "サンライズ", rw: "直角", smk: "白", signal: "周回中に緑の長SMK+翼左右振り", proc: "横はオープナーと同じ展開。縦はリーダー30度、2・3番機は15度で上昇し、扇状に開く。" },
             { id: "m15", name: "チェンジオーバーターン", rw: "平行", smk: "白", signal: "周回中に白・赤のSMKの交互出し後、白SMKで進入時に1秒間赤SMK", proc: "トレイル隊形へ変更、赤SMKで右旋回しつつワイドV字へ。スロットルは95%固定でリーダーに合わせる。" },
-            { id: "m16", name: "チェンジオーバーループ", rw: "平行", smk: "白", signal: "周回中に白・緑のSMKの交互出し後、白SMKで進入時に1秒間緑SMK", proc: "トレイル隊形からループ開始、頂点でデルタへ変形。下降中に隊形を整え、地上付近で完成させる。" },
+            { id: "m16", name: "チェンジオーバーループ", rw: "平行", smk: "白", signal: "周回中に白・緑のSMKの交互出し後、白SMKで進入時に1秒間緑SMK", proc: "トレイル隊形からループ開始、頂点でデルタへ変形. 下降中に隊形を整え、地上付近で完成させる。" },
             { id: "m17", name: "360°ターン", rw: "平行", smk: "無し", signal: "RW上で白SMKオン+バンク開始", proc: "リーダーとの位置合わせに集中。内側機はスロットルを絞り、外側機は100%以上で回る。" },
-            { id: "m18", name: "下方開花", rw: "直角", smk: "白", signal: "周回中に大きく翼振り（左右）デルタで進入", proc: "RW通過後ループ開始、頂点で白SMKオン。指定の5方向に散開し、地上付近で水平に戻る。" },
+            { id: "m18", name: "下方開花", rw: "直角", smk: "白", signal: "周回中に大きく翼振り（左右）デルタで進入", proc: "RW通過後ループ開始、頂点で白SMKオン. 指定の5方向に散開し、地上付近で水平に戻る。", image: "" },
             { id: "m19", name: "レインフォール", rw: "直角", smk: "白", signal: "周回中に緑SMK点滅、V字デルタへ", proc: "V字デルタで直角進入。垂直上昇から頂点へ行き、下りの垂直姿勢で一斉に散開。" },
             { id: "m20", name: "ローリングコンバットピッチ", rw: "平行", smk: "白", signal: "周回中にエルロンで翼振り（左）", proc: "左エシュロン隊形へ変更。RW上で右に1回転ロール後、そのまま着陸態勢へ移行する。" },
             { id: "m21", name: "コンバットブレイク", rw: "平行", smk: "無し", signal: "周回中にエルロンで翼振り（右）", proc: "右エシュロン隊形へ変更。RW上でリーダーから3秒間隔で順に右へ離脱し、着陸パターンに入る。" },
             { id: "m22", name: "コンバットブレイク（万博式）", rw: "平行", smk: "白", signal: "周回中に翼振り（右）+白SMK", proc: "白SMK有りで進入。リーダーのSMKオフを確認後、1秒後に順次右へ離脱する。" },
             { id: "m23", name: "着陸準備", rw: "平行", smk: "無し", signal: "減速開始時に長白SMK", proc: "リーダー白SMKオンで減速開始。ギアダウン・フラップ下げのタイミングをリーダーと合わせる。" },
-            { id: "m24", name: "V字デルタ", rw: "隊形変換", smk: "無し", signal: "周回中にラダー尻振り", proc: "9機V字デルタへ変更。合図後、後続機は指定の位置へスロットルを調整して移動。" },
-            { id: "m25", name: "ワイドV字デルタ", rw: "隊形変換", smk: "無し", signal: "周回中にエルロンロール", proc: "ワイドV字へ変更。各機の間隔を翼幅1機分以上開ける。" },
+            { id: "m24", name: "V字デルタ", rw: "隊形変換", smk: "無し", signal: "周回中にラダー尻振り", proc: "9機V字デルタへ変更. 合図後、後続機は指定の位置へスロットルを調整して移動。" },
+            { id: "m25", name: "ワイドV字デルタ", rw: "隊形変換", smk: "無し", signal: "周回中にエルロンロール", proc: "ワイドV字へ変更. 各機の間隔を翼幅1機分以上開ける。" },
             { id: "m26", name: "次課目をレインボーSMK", rw: "カラー演出", smk: "レインボー", signal: "周回中カラーSMKを3色以上連続出し", proc: "各機指定の色（例：1番機白、2番機赤等）へSMKボタンを切り替えておく。" },
-            { id: "m27", name: "トラブル発生で離脱", rw: "緊急", smk: "赤(長)", signal: "赤の長SMK ＋ 編隊から離脱", proc: "トラブル機は即座に編隊を離脱し、赤スモークを出しながら安全な空域へ退避。他機は編隊を維持。" }
+            { id: "m27", name: "トラブル発生で離脱", rw: "緊急", smk: "赤(長)", signal: "赤の長SMK ＋ 編隊から離脱", proc: "トラブル機は即座に編隊を離脱し、赤スモークを出しながら安全な空域へ退避。他機は編隊を維持。", isEmergency: true }
         ];
 
         function getCardBorder(item) {
-            if (item.isEmergency) return 'border-color: #ef4444;';
+            if (item.isEmergency) return 'border-color: #ef4444; border-width: 2px;';
             if (item.name.includes("レインボー")) {
                 return 'border-image: linear-gradient(to bottom right, #f87171, #4ade80, #fbbf24) 1; border-style: solid;';
             }
@@ -549,9 +643,10 @@
             if(signalGrid) {
                 signalGrid.innerHTML = maneuvers.map(item => {
                     const borderStyle = getCardBorder(item);
+                    const emergencyClass = item.isEmergency ? 'emergency-pulse' : 'hover:bg-white/10';
                     return `
                     <button onclick="document.getElementById('${item.id}').scrollIntoView({behavior:'smooth'})" 
-                            class="glass-card signal-card p-4 text-left ${item.isEmergency ? 'bg-red-950/20' : 'hover:bg-white/10'} transition flex flex-col gap-1"
+                            class="glass-card signal-card p-4 text-left ${emergencyClass} transition flex flex-col gap-1"
                             style="${borderStyle}">
                         <div class="text-[10px] ${item.isEmergency ? 'text-red-400' : 'text-gray-400'} font-bold uppercase tracking-widest">${item.name}</div>
                         <div class="text-xs text-gray-200 font-light leading-tight">${item.signal}</div>
@@ -568,6 +663,19 @@
                             <h3 class="font-normal tracking-widest text-xl uppercase ${item.isEmergency ? 'text-red-400' : 'text-white'}">${item.name}</h3>
                             <span class="text-[9px] ${item.isEmergency ? 'bg-red-500/20 text-red-300' : 'bg-white/10 text-gray-400'} px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase">進入: ${item.rw} / SMK: ${item.smk}</span>
                         </div>
+                        ${item.video ? `
+                            <div class="mb-6 overflow-hidden rounded-xl border border-white/10 shadow-2xl bg-black">
+                                <video src="${item.video}" autoplay muted loop playsinline class="w-full h-auto"></video>
+                            </div>
+                        ` : ''}
+                        ${item.image ? `
+                            <div class="mb-6 overflow-hidden rounded-xl border border-white/10 shadow-2xl bg-black/40 p-2">
+                                <div class="image-placeholder !my-0 !h-auto min-h-[200px]">
+                                    <i class="fas fa-image text-3xl mb-2 opacity-20"></i>
+                                    ${item.image}
+                                </div>
+                            </div>
+                        ` : ''}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[12px]">
                             <div class="${item.isEmergency ? 'bg-red-500/5 border-red-500/20' : 'bg-white/5 border-white/10'} p-4 rounded-xl border">
                                 <div class="${item.isEmergency ? 'text-red-400' : 'text-amber-400'} font-bold mb-2 uppercase tracking-widest text-[9px]">Signal (リーダーの合図)</div>

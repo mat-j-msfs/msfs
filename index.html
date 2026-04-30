@@ -175,6 +175,21 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* チャットルーム専用スタイル */
+        .chat-message {
+            @apply bg-white/5 border border-white/5 p-3 rounded-lg mb-2 max-w-[90%] break-words;
+        }
+        .chat-time {
+            @apply text-[9px] text-gray-500 mt-1;
+        }
+        .chat-name {
+            @apply text-[10px] font-bold text-blue-400 mb-1;
+        }
+        #chat-window {
+            height: calc(100vh - 350px);
+            min-height: 300px;
+        }
     </style>
 </head>
 <body class="sky-bg">
@@ -221,6 +236,7 @@
             <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-indigo-400" onclick="showPage('links'); closeMenu()">外部リンク</a>
             <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-gray-200" onclick="showPage('addons'); closeMenu()">アドオン</a>
             <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-emerald-400" onclick="showPage('landing', 'recruitment'); closeMenu()">入隊/見学</a>
+            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-rose-400" onclick="openChatLogin(); closeMenu()">CHAT ROOM</a>
         </div>
 
         <main id="view-landing" class="page-view active">
@@ -272,6 +288,9 @@
                         <a href="https://www.youtube.com/@mat-j_msfs_acrobat_team_japan" target="_blank" class="hero-btn btn-rose">
                             <i class="fab fa-youtube"></i> YouTube
                         </a>
+                        <button onclick="openChatLogin()" class="hero-btn btn-rose border-rose-500/50 text-rose-300">
+                            <i class="fas fa-comments"></i> チャットルーム(隊員専用)
+                        </button>
                     </div>
                 </div>
             </section>
@@ -442,7 +461,7 @@
                         <p class="text-gray-200 text-sm leading-relaxed mb-6 flex-grow">
                             MAT-Jメンバーであり開発者。Spiticeさんと一緒にゲーム内MODを開発されています。
                         </p>
-                        <div class="bg-black/20 p-4 rounded-lg mb-8 border border-white/5">
+                        <div class="bg-black/20 p-4 rounded-lg mb-8 border border-white/10">
                             <p class="text-[10px] text-emerald-400 font-bold uppercase mb-2 tracking-widest">Latest Development</p>
                             <a href="http://fxjiro.blog117.fc2.com/blog-entry-265.html" target="_blank" class="text-xs text-blue-400 hover:underline break-all block">
                                 最新開発ページ(ブログ) <i class="fas fa-external-link-alt ml-1"></i>
@@ -497,21 +516,65 @@
                         現在メンテナンス中です。ご不便おかけいたします
                     </p>
                 </div>
+            </section>
+        </main>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12 opacity-30 pointer-events-none">
-                    <div class="glass-card p-6 border-white/20">
-                        <div class="h-4 w-24 bg-white/30 rounded mb-4"></div>
-                        <div class="h-2 w-full bg-white/20 rounded mb-2"></div>
-                        <div class="h-2 w-2/3 bg-white/20 rounded"></div>
+        <!-- CHAT ROOM VIEW -->
+        <main id="view-chat" class="page-view pt-32 px-6">
+            <div class="container mx-auto max-w-2xl">
+                <div class="flex items-center gap-4 mb-8">
+                    <button onclick="showPage('landing')" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h2 class="text-3xl font-normal tracking-widest uppercase text-white" style="font-family: 'Cinzel', serif;">TEAM CHAT</h2>
+                </div>
+
+                <div class="glass-card p-6 flex flex-col h-[70vh]">
+                    <div class="flex justify-between items-center border-b border-white/10 pb-4 mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-xs font-bold uppercase tracking-widest text-emerald-400">Online</span>
+                        </div>
+                        <div class="text-[10px] text-gray-400 uppercase tracking-widest" id="chat-user-display">User: Guest</div>
                     </div>
-                    <div class="glass-card p-6 border-white/20">
-                        <div class="h-4 w-24 bg-white/30 rounded mb-4"></div>
-                        <div class="h-2 w-full bg-white/20 rounded mb-2"></div>
-                        <div class="h-2 w-2/3 bg-white/20 rounded"></div>
+
+                    <!-- チャット履歴 -->
+                    <div id="chat-window" class="flex-grow overflow-y-auto pr-2 custom-scrollbar">
+                        <div class="text-center py-10">
+                            <p class="text-xs text-gray-500 uppercase tracking-[0.3em]">No messages yet.</p>
+                        </div>
+                    </div>
+
+                    <!-- 入力エリア -->
+                    <div class="mt-4 pt-4 border-t border-white/10 flex gap-2">
+                        <input type="text" id="chat-input" placeholder="メッセージを入力..." class="flex-grow bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-blue-500/50 transition">
+                        <button onclick="sendChatMessage()" class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center hover:bg-blue-500 transition">
+                            <i class="fas fa-paper-plane text-xs"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </main>
+
+        <!-- AUTH MODAL -->
+        <div id="auth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] hidden items-center justify-center p-4">
+            <div class="glass-card p-8 w-full max-w-sm text-center">
+                <div id="auth-step-1">
+                    <h3 class="text-xl font-bold mb-6 tracking-widest uppercase">Enter Password</h3>
+                    <input type="password" id="auth-password" placeholder="0000" class="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-center text-2xl tracking-[0.5em] mb-6 focus:outline-none focus:border-rose-500 transition">
+                    <div class="flex gap-2">
+                        <button onclick="closeAuthModal()" class="flex-1 py-3 text-xs font-bold text-gray-400 uppercase tracking-widest">Cancel</button>
+                        <button onclick="checkChatPassword()" class="flex-1 py-3 bg-rose-600 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-rose-500 transition">Unlock</button>
+                    </div>
+                </div>
+                <div id="auth-step-2" class="hidden">
+                    <h3 class="text-xl font-bold mb-6 tracking-widest uppercase">Your Name</h3>
+                    <input type="text" id="auth-name" placeholder="Pilot Name" class="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-center text-lg mb-6 focus:outline-none focus:border-blue-500 transition">
+                    <button onclick="enterChatRoom()" class="w-full py-4 bg-blue-600 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-blue-500 transition shadow-lg shadow-blue-500/20">Join Room</button>
+                </div>
+                <p id="auth-error" class="text-[10px] text-rose-500 mt-4 font-bold uppercase hidden">Invalid Password</p>
+            </div>
+        </div>
 
         <footer class="py-16 text-center text-[10px] text-gray-400 border-t border-white/10">
             <p class="tracking-[0.4em] uppercase mb-2 text-gray-300">Formation Flight Team MAT-J</p>
@@ -564,6 +627,84 @@
         function scrollInLanding(sectionId) {
             showPage('landing', sectionId);
         }
+
+        /* --- AUTH & CHAT LOGIC --- */
+        let chatUserName = "Pilot";
+        const authModal = document.getElementById('auth-modal');
+        const authStep1 = document.getElementById('auth-step-1');
+        const authStep2 = document.getElementById('auth-step-2');
+        const chatInput = document.getElementById('chat-input');
+        const chatWindow = document.getElementById('chat-window');
+
+        function openChatLogin() {
+            authModal.classList.remove('hidden');
+            authModal.classList.add('flex');
+            authStep1.classList.remove('hidden');
+            authStep2.classList.add('hidden');
+            document.getElementById('auth-error').classList.add('hidden');
+            document.getElementById('auth-password').value = "";
+        }
+
+        function closeAuthModal() {
+            authModal.classList.add('hidden');
+            authModal.classList.remove('flex');
+        }
+
+        function checkChatPassword() {
+            const pass = document.getElementById('auth-password').value;
+            const error = document.getElementById('auth-error');
+            if (pass === "0000") {
+                authStep1.classList.add('hidden');
+                authStep2.classList.remove('hidden');
+                error.classList.add('hidden');
+            } else {
+                error.classList.remove('hidden');
+            }
+        }
+
+        function enterChatRoom() {
+            const name = document.getElementById('auth-name').value.trim();
+            if (!name) return;
+            chatUserName = name;
+            document.getElementById('chat-user-display').textContent = `User: ${chatUserName}`;
+            closeAuthModal();
+            showPage('chat');
+            // ウェルカムメッセージ
+            addMessageToChat("System", `Welcome, ${chatUserName}! 隊員専用チャットへようこそ。`);
+        }
+
+        function sendChatMessage() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+            addMessageToChat(chatUserName, msg);
+            chatInput.value = "";
+        }
+
+        function addMessageToChat(name, text) {
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = name === "System" ? "text-center mb-4 italic opacity-50 text-[10px]" : "mb-4 animate-fadeIn";
+            
+            if (name === "System") {
+                msgDiv.innerHTML = `<p>${text}</p>`;
+            } else {
+                msgDiv.innerHTML = `
+                    <div class="chat-name">${name}</div>
+                    <div class="chat-message">${text}</div>
+                    <div class="chat-time">${timeStr}</div>
+                `;
+            }
+            
+            chatWindow.appendChild(msgDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // Enterキーで送信
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
 
         const introOverlay = document.getElementById('video-intro');
         const mainContent = document.getElementById('main-content');

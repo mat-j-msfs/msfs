@@ -3,817 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAT-J - MSFS Formation Flight Team</title>
+    <title>UNDER MAINTENANCE - MAT-J MSFS Formation Flight Team</title>
+    <!-- Tailwind CSS for utility-first styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for high-quality aviation and system icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Importing premium fonts matching the team's visual identity */
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Exo+2:wght@200;400;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap');
 
         body {
             font-family: 'Exo 2', 'Noto Sans JP', sans-serif;
-            background-color: #1e293b; 
+            background-color: #0f172a; 
             color: #fff;
             margin: 0;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
         }
 
-        #video-intro {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1s ease-in-out, visibility 1s;
-        }
-
-        #intro-video-element {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .skip-btn {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 10px;
-            letter-spacing: 2px;
-            z-index: 10000;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-        .skip-btn:hover { background: rgba(255, 255, 255, 0.2); }
-
-        #main-content {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 1.5s ease-in-out;
-        }
-
+        /* Night sky radial gradient matching the original aviation theme */
         .sky-bg {
-            background: radial-gradient(circle at center, #334155 0%, #0f172a 100%);
-            background-attachment: fixed;
+            background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
+            position: relative;
         }
 
+        /* Cockpit HUD grid pattern overlays */
+        .hud-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center;
+            pointer-events: none;
+        }
+
+        /* Screen scanning line simulation for an authentic monitor feel */
+        .scanlines {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            ), linear-gradient(
+                90deg, 
+                rgba(255, 0, 0, 0.02), 
+                rgba(0, 255, 0, 0.01), 
+                rgba(0, 0, 255, 0.02)
+            );
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        /* Premium Glassmorphism Cards */
         .glass-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
         }
 
+        /* Cinematic headers */
         .hero-title {
             font-family: 'Cinzel', serif;
             background: linear-gradient(135deg, #ffffff 0%, #a1a1a1 50%, #ffffff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
-            line-height: 1.1;
-        }
-
-        .hero-subtitle {
-            background: linear-gradient(90deg, #d4af37, #f4e07d, #d4af37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-        }
-
-        .hero-btn {
-            @apply px-6 py-3 rounded-full font-bold transition-all duration-300 text-[10px] tracking-widest uppercase flex items-center justify-center gap-2 border cursor-pointer;
-            backdrop-filter: blur(4px);
-        }
-
-        .btn-blue { border-color: rgba(59, 130, 246, 0.5); background: rgba(59, 130, 246, 0.1); color: #93c5fd; }
-        .btn-blue:hover { background: #3b82f6; color: white; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); transform: translateY(-2px); }
-
-        .btn-emerald { border-color: rgba(16, 185, 129, 0.5); background: rgba(16, 185, 129, 0.1); color: #6ee7b7; }
-        .btn-emerald:hover { background: #10b981; color: white; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); transform: translateY(-2px); }
-
-        .btn-amber { border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.1); color: #fcd34d; }
-        .btn-amber:hover { background: #f59e0b; color: white; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); transform: translateY(-2px); }
-
-        .btn-sky { border-color: rgba(14, 165, 233, 0.5); background: rgba(14, 165, 233, 0.1); color: #7dd3fc; }
-        .btn-sky:hover { background: #0ea5e9; color: white; box-shadow: 0 0 20px rgba(14, 165, 233, 0.4); transform: translateY(-2px); }
-
-        .btn-rose { border-color: rgba(244, 63, 94, 0.5); background: rgba(244, 63, 94, 0.1); color: #fda4af; }
-        .btn-rose:hover { background: #f43f5e; color: white; box-shadow: 0 0 20px rgba(244, 63, 94, 0.4); transform: translateY(-2px); }
-
-        .btn-indigo { border-color: rgba(99, 102, 241, 0.5); background: rgba(99, 102, 241, 0.1); color: #a5b4fc; }
-        .btn-indigo:hover { background: #6366f1; color: white; box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); transform: translateY(-2px); }
-
-        .btn-white { border-color: rgba(255, 255, 255, 0.4); background: rgba(255, 255, 255, 0.05); color: #fff; }
-        .btn-white:hover { background: #fff; color: #000; transform: translateY(-2px); }
-
-        .fade-in {
-            animation: fadeIn 1s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        section { scroll-margin-top: 80px; }
-
-        .recruit-card {
-            background: linear-gradient(135deg, rgba(50, 50, 60, 0.8), rgba(30, 35, 45, 0.95));
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        #mobile-menu {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateX(100%);
-        }
-        #mobile-menu.active { transform: translateX(0); }
-
-        .signal-card {
-            border-width: 1px;
-            border-style: solid;
-            transition: all 0.3s ease;
-        }
-        .signal-card:hover {
-            transform: scale(1.02);
-            filter: brightness(1.2);
-        }
-
-        .content-image {
-            @apply w-full h-auto rounded-xl border border-white/10 shadow-lg my-6 block;
-        }
-
-        @keyframes emergency-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); border-color: rgba(239, 68, 68, 1); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); border-color: rgba(239, 68, 68, 0.5); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); border-color: rgba(239, 68, 68, 1); }
-        }
-        .emergency-pulse {
-            animation: emergency-pulse 2s infinite;
-            background: rgba(127, 29, 29, 0.4) !important;
-        }
-
-        .page-view {
-            display: none;
-            min-height: 100vh;
-        }
-        .page-view.active {
-            display: block;
-            animation: pageTransition 0.5s ease-out;
-        }
-
-        @keyframes pageTransition {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.25));
         }
     </style>
 </head>
-<body class="sky-bg">
+<body class="sky-bg flex items-center justify-center p-4">
 
-    <div id="video-intro">
-        <video id="intro-video-element" autoplay muted playsinline>
-            <source src="opening.mp4" type="video/mp4">
-        </video>
-        <button class="skip-btn" onclick="exitIntro()">SKIP INTRO</button>
-    </div>
+    <!-- Cockpit HUD elements -->
+    <div class="hud-grid" style="opacity: 0.3;"></div>
 
-    <div id="main-content">
-        <header class="fixed top-0 w-full z-[100] glass-card rounded-none border-none border-b border-white/10">
-            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('landing')">
-                    <span class="text-2xl font-black italic tracking-tighter text-white">MAT-J</span>
-                    <span class="text-[8px] sm:text-[9px] font-medium tracking-[0.2em] sm:tracking-[0.3em] text-gray-400 uppercase border-l border-white/20 pl-3">MSFS Acrobat Team Japan</span>
-                </div>
-                
-                <div class="hidden lg:flex space-x-8 text-[10px] font-bold tracking-widest">
-                    <a href="javascript:void(0)" onclick="showPage('landing', 'home')" class="hover:text-blue-400 transition text-gray-200">HOME</a>
-                    <a href="javascript:void(0)" onclick="showPage('landing', 'about')" class="hover:text-blue-400 transition text-gray-200">ABOUT</a>
-                    <a href="javascript:void(0)" onclick="showPage('landing', 'guidelines')" class="hover:text-blue-400 transition text-gray-200">隊員向け基本</a>
-                    <a href="javascript:void(0)" onclick="showPage('landing', 'members')" class="hover:text-blue-400 transition text-gray-200">MEMBERS</a>
-                    <a href="javascript:void(0)" onclick="showPage('landing', 'signals')" class="hover:text-amber-400 transition text-gray-100">合図一覧</a>
-                    <a href="javascript:void(0)" onclick="showPage('landing', 'maneuvers')" class="hover:text-blue-400 transition text-gray-200">演目一覧</a>
-                    <a href="javascript:void(0)" onclick="showPage('addons')" class="hover:text-blue-400 transition text-gray-200">アドオン一覧</a>
-                    <a href="javascript:void(0)" onclick="showPage('recruitment')" class="text-emerald-400 font-black hover:text-emerald-300 transition">入隊/見学</a>
-                </div>
-
-                <button id="menu-toggle" class="lg:hidden text-white text-2xl focus:outline-none z-[110]">
-                    <i class="fas fa-bars" id="menu-icon"></i>
-                </button>
-            </nav>
-        </header>
-
-        <div id="mobile-menu" class="fixed inset-0 bg-slate-900/95 z-[105] flex flex-col items-center justify-center space-y-8 lg:hidden">
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-gray-200" onclick="showPage('landing', 'home'); closeMenu()">HOME</a>
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-gray-200" onclick="showPage('landing', 'about'); closeMenu()">ABOUT</a>
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-blue-400" onclick="showPage('landing', 'guidelines'); closeMenu()">隊員向け基本</a>
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-gray-200" onclick="showPage('landing', 'members'); closeMenu()">MEMBERS</a>
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-amber-400" onclick="showPage('landing', 'signals'); closeMenu()">合図一覧</a>
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-gray-200" onclick="showPage('landing', 'maneuvers'); closeMenu()">演目一覧</a>
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-indigo-400" onclick="showPage('links'); closeMenu()">外部リンク</a>
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-gray-200" onclick="showPage('addons'); closeMenu()">アドオン一覧</a>
-            <a href="javascript:void(0)" class="text-xl font-bold tracking-widest text-emerald-400" onclick="showPage('landing', 'recruitment'); closeMenu()">入隊/見学</a>
+    <!-- Main Container -->
+    <div class="w-full max-w-2xl z-10 text-center px-4">
+        
+        <!-- Header Brand Info -->
+        <div class="mb-10 flex flex-col items-center gap-2">
+            <div class="flex items-center gap-3">
+                <span class="text-4xl font-black italic tracking-tighter text-white drop-shadow-lg">MAT-J</span>
+                <span class="text-[10px] font-medium tracking-[0.3em] text-gray-300 uppercase border-l border-white/30 pl-3">MSFS Acrobat Team Japan</span>
+            </div>
         </div>
 
-        <main id="view-landing" class="page-view active">
-            <!-- HOME SECTION -->
-            <section id="home" class="min-h-screen flex flex-col items-center pt-20 px-4 text-center">
-                <div class="max-w-md mx-auto mb-10 fade-in">
-                    <img src="matj.jpg" alt="MAT-J Image" class="w-full h-auto rounded-2xl shadow-2xl border border-white/10" onerror="this.style.display='none'">
-                </div>
-
-                <div class="fade-in">
-                    <h1 class="hero-title text-6xl md:text-8xl lg:text-9xl mb-4 font-normal uppercase tracking-[0.15em]">
-                        PRECISION<br>
-                        <span class="hero-subtitle text-4xl md:text-6xl lg:text-7xl block mt-2 tracking-[0.25em]">IN MOTION.</span>
-                    </h1>
-
-                    <p class="text-xs md:text-sm text-gray-300 mb-12 max-w-xl mx-auto leading-relaxed font-light tracking-[0.3em]">
-                        Microsoft Flight Simulator 編隊飛行チーム MAT-J。<br>
-                        <span class="text-white font-bold">21名のパイロットによる, 空の芸術。</span>
-                    </p>
-
-                    <div class="flex flex-wrap justify-center gap-4 mb-10 max-w-5xl px-4">
-                        <a href="javascript:void(0)" onclick="scrollInLanding('members')" class="hero-btn btn-blue">
-                            <i class="fas fa-users"></i> メンバー一覧
-                        </a>
-                        <a href="javascript:void(0)" onclick="scrollInLanding('about')" class="hero-btn btn-white">
-                            <i class="fas fa-info-circle"></i> 私たちの活動
-                        </a>
-                        <a href="javascript:void(0)" onclick="scrollInLanding('signals')" class="hero-btn btn-amber">
-                            <i class="fas fa-bullhorn"></i> 合図一覧
-                        </a>
-                        <a href="javascript:void(0)" onclick="scrollInLanding('maneuvers')" class="hero-btn btn-white">
-                            <i class="fas fa-plane"></i> 演目一覧
-                        </a>
-                        <a href="javascript:void(0)" onclick="scrollInLanding('guidelines')" class="hero-btn btn-blue">
-                            <i class="fas fa-book-open"></i> 隊員向け基本
-                        </a>
-                        <a href="javascript:void(0)" onclick="showPage('addons')" class="hero-btn btn-white">
-                            <i class="fas fa-tools"></i> アドオン一覧
-                        </a>
-                        <button onclick="showPage('links')" class="hero-btn btn-indigo">
-                            <i class="fas fa-external-link-alt"></i> 外部リンク
-                        </button>
-                        <a href="javascript:void(0)" onclick="scrollInLanding('recruitment')" class="hero-btn btn-emerald">
-                            <i class="fas fa-user-plus"></i> 入隊/見学
-                        </a>
-                        <a href="https://x.com/MAT_J_acrobat" target="_blank" class="hero-btn btn-sky">
-                            <i class="fab fa-x-twitter"></i> Contact
-                        </a>
-                        <a href="https://www.youtube.com/@mat-j_msfs_acrobat_team_japan" target="_blank" class="hero-btn btn-rose">
-                            <i class="fab fa-youtube"></i> YouTube
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- GUIDELINES SECTION -->
-            <section id="guidelines" class="py-24 px-6 bg-white/[0.03]">
-                <div class="container mx-auto max-w-4xl">
-
-                    <!-- ★★★ 追加: 更新履歴セクション ★★★ -->
-                    <div class="glass-card p-6 mb-12 border-l-4 border-sky-500/50">
-                        <h3 class="text-[11px] text-sky-400 font-bold tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
-                            <i class="fas fa-history"></i> Update History / 更新履歴
-                        </h3>
-                        <ul class="space-y-3 text-xs md:text-sm text-gray-300 font-light">
-                            <li class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 border-b border-white/5 pb-2">
-                                <span class="text-gray-400 font-mono text-[10px] sm:text-xs">2026/06/19</span>
-                                <span>アドオン一覧に三菱F-1(KE64)を追加しました。演目一覧レインフォールに画像添付しました。</span>
-                            </li>
-                            <li class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 border-b border-white/5 pb-2">
-                                <span class="text-gray-400 font-mono text-[10px] sm:text-xs">20XX/XX/XX</span>
-                                <span>「更新内容書き込み用空欄」</span>
-                            </li>
-                            <li class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-                                <span class="text-gray-400 font-mono text-[10px] sm:text-xs">2026/06/05</span>
-                                <span>「更新内容書き込み用空欄」</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- ★★★ ここまで ★★★ -->
-
-                    <h2 class="text-2xl font-normal tracking-widest border-l-4 border-blue-500 pl-4 mb-10 uppercase text-white" style="font-family: 'Cinzel', serif;">MAT-J BASIC OPERATIONS</h2>
-                    
-                    <div class="space-y-12">
-                        <div class="glass-card p-8 md:p-12 leading-relaxed">
-                            <div class="space-y-6 text-sm md:text-base text-gray-200 font-light">
-                                <p>MAT-Jは航空自衛隊アクロバットチーム「ブルーインパルス」を参考とし、演目を設定しております。その為実践に近い計器飛行を取り入れております。MAT-Jの最高難易度技はスタークロスです。</p>
-                                <p>そしてなんとMAT-Jは<span class="text-white font-bold">ボイスチャットを一切使用しません。</span></p>
-                                
-                                <div class="pt-6 border-t border-white/10">
-                                    <h3 class="text-xl font-bold text-white mb-4">使用機体：MB-339</h3>
-                                    <p>ゲーム内では非常に操作性がよく2020/2024で幅広く使われております。</p>
-                                    <p>現在ではイタリア空軍フレッチェトリコローリとチリ空軍が採用。今でも現役で空を飛んでおります。</p>
-                                    
-                                    <img src="fadein.jpg" alt="MB-339" class="content-image" onerror="this.style.display='none'">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="glass-card p-8 md:p-12 leading-relaxed">
-                            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                                <span class="w-1.5 h-6 bg-blue-500"></span>
-                                MAT-Jが取り入れている編隊飛行隊形
-                            </h3>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-                                <div class="bg-white/10 p-4 rounded text-center text-xs tracking-widest uppercase border border-white/5">ダイヤモンド隊形</div>
-                                <div class="bg-white/10 p-4 rounded text-center text-xs tracking-widest uppercase border border-white/5">デルタ隊形</div>
-                                <div class="bg-white/10 p-4 rounded text-center text-xs tracking-widest uppercase border border-white/5">トレイル隊形</div>
-                                <div class="bg-white/10 p-4 rounded text-center text-xs tracking-widest uppercase border border-white/5">エシュロン隊形</div>
-                                <div class="bg-white/10 p-4 rounded text-center text-xs tracking-widest uppercase border border-white/5">傘型(V字)隊形</div>
-                            </div>
-                            
-                            <div class="space-y-4 text-sm text-gray-200 font-light">
-                                <p>MAT-Jではダイヤモンド隊形を基本隊形とし、7機以下の場合はデルタ隊形を基本隊形としております。</p>
-                                <p>MAT-Jでは動いた人の早い者順でその日の機体番号が決まります。</p>
-                                <p>中でも<span class="text-white font-bold">4番機は初心者に最適です。</span>しかし編隊隊形変化が多い番号でもあります。</p>
-                                <p>飛んでいる最中のMAT-J集団に途中合流する場合は一番最後尾番号または空いているポジションへ入ります。</p>
-                            </div>
-
-                            <img src="formationpatern.jpg" alt="編隊飛行隊形" class="content-image" onerror="this.style.display='none'">
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="glass-card p-8">
-                                <h3 class="text-lg font-bold text-white mb-4">演目進入ルート</h3>
-                                <p class="text-sm text-gray-300 font-light mb-4">MAT-Jでは各演目に進入角度が決まっております。</p>
-                                <img src="runwaysinnyu.jpg" alt="進入ルート" class="content-image" onerror="this.style.display='none'">
-                            </div>
-                            <div class="glass-card p-8">
-                                <h3 class="text-lg font-bold text-white mb-4">離陸滑走ルール</h3>
-                                <p class="text-sm text-gray-400 font-light mb-4">ボイスチャットを使用しないため、離陸にも独自のルールを設けております。</p>
-                                <img src="tizyoutakeoff.jpg" alt="離陸ルール" class="content-image" onerror="this.style.display='none'">
-                            </div>
-                        </div>
-
-                        <div class="glass-card p-8">
-                            <h3 class="text-lg font-bold text-white mb-4">地上タキシングルール</h3>
-                            <img src="tizyoutaxi.jpg" alt="地上タキシングルール" class="content-image" onerror="this.style.display='none'">
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ABOUT SECTION -->
-            <section id="about" class="py-24 px-6 bg-white/[0.04]">
-                <div class="container mx-auto max-w-3xl">
-                    <h2 class="text-2xl font-normal tracking-widest border-l-4 border-blue-500 pl-4 mb-8 uppercase text-white" style="font-family: 'Cinzel', serif;">私たちの活動</h2>
-                    <div class="glass-card p-8 leading-relaxed text-sm md:text-base text-gray-200 shadow-2xl font-light">
-                        <p class="text-lg font-normal text-white mb-4 tracking-widest">私たちは参加自由！報告義務なし</p>
-                        <p class="mb-4">をモットーにMSFS2020/2024にて活動しているチームです。</p>
-                        <p class="mb-4">2020年頃、創始者を中心に私たちは2ちゃんねるの一つの募集から生まれました。</p>
-                        <p class="mb-4">昔は編隊飛行を「道場」と呼んでおり, その道場に集まってくる隊員がいつの間にか巨大な組織となりました。</p>
-                        <p class="mb-4">精度にこだわった編隊飛行を追い求め、チームを結成いたしました。</p>
-                        <p class="text-white font-bold border-t border-white/10 pt-4 mt-6">このチームには”代表”はいません。みんなが代表であり, 支えあっているチームなのです。</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- MEMBERS SECTION -->
-            <section id="members" class="py-24 px-6">
-                <div class="container mx-auto">
-                    <h2 class="text-2xl font-normal tracking-widest border-l-4 border-blue-500 pl-4 mb-10 uppercase text-white" style="font-family: 'Cinzel', serif;">MEMBERS (21 PILOTS)</h2>
-                    <div id="member-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                </div>
-            </section>
-
-            <!-- SIGNALS SECTION -->
-            <section id="signals" class="py-24 px-6 bg-white/[0.04]">
-                <div class="container mx-auto">
-                    <h2 class="text-2xl font-normal tracking-widest border-l-4 border-amber-500 pl-4 mb-2 uppercase text-white" style="font-family: 'Cinzel', serif;">合図一覧</h2>
-                    <p class="text-[10px] text-gray-400 mb-6 font-bold uppercase tracking-[0.2em]">クリックで下の演目詳細へジャンプ</p>
-                    <div id="signal-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
-                </div>
-            </section>
-
-            <!-- MANEUVERS SECTION -->
-            <section id="maneuvers" class="py-24 px-6">
-                <div class="container mx-auto">
-                    <h2 class="text-2xl font-normal tracking-widest border-l-4 border-blue-500 pl-4 mb-8 uppercase text-white" style="font-family: 'Cinzel', serif;">MANEUVERS DETAIL</h2>
-                    <div id="maneuver-details" class="space-y-4"></div>
-                </div>
-            </section>
-
-            <!-- RECRUITMENT SECTION -->
-            <section id="recruitment" class="py-32 px-6">
-                <div class="container mx-auto max-w-4xl text-center">
-                    <div class="recruit-card p-10 md:p-16 rounded-[2rem] shadow-3xl">
-                        <div class="inline-block px-4 py-1 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-black tracking-[0.3em] mb-8 uppercase border border-emerald-500/30">RECRUITMENT & GUEST</div>
-                        <h2 class="text-5xl md:text-7xl font-normal mb-10 uppercase tracking-widest text-white" style="font-family: 'Cinzel', serif;">JOIN US</h2>
-                        
-                        <div class="text-gray-200 text-sm md:text-base font-light mb-12 space-y-6 leading-relaxed max-w-2xl mx-auto">
-                            <p>私たちは隊員を募集しております。<br>また, 見学者も常に募集しております。</p>
-                            <p class="text-white font-medium bg-white/10 py-2 px-4 inline-block rounded border border-white/20">高校生以上という条件のみ付け加えさせてください。</p>
-                            <p class="text-lg md:text-xl font-normal text-white tracking-[0.1em] italic">向いているか向いていないかはあなた次第だ！</p>
-                            <p class="text-emerald-300 font-bold text-lg tracking-[0.3em]">さぁ！まずはコンタクト</p>
-                        </div>
-
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-                            <div class="glass-card p-4 flex flex-col items-center gap-2 border-emerald-500/30">
-                                <i class="fas fa-microphone-slash text-emerald-400"></i>
-                                <span class="text-[10px] font-bold tracking-widest uppercase">ボイスチャット不要</span>
-                            </div>
-                            <div class="glass-card p-4 flex flex-col items-center gap-2 border-emerald-500/30">
-                                <i class="fas fa-calendar-check text-emerald-400"></i>
-                                <span class="text-[10px] font-bold tracking-widest uppercase">毎日参加自由</span>
-                            </div>
-                            <div class="glass-card p-4 flex flex-col items-center gap-2 border-emerald-500/30">
-                                <i class="fas fa-eye text-emerald-400"></i>
-                                <span class="text-[10px] font-bold tracking-widest uppercase">見学可能(F-18)</span>
-                            </div>
-                            <div class="glass-card p-4 flex flex-col items-center gap-2 border-emerald-500/30">
-                                <i class="fas fa-clipboard-check text-emerald-400"></i>
-                                <span class="text-[10px] font-bold tracking-widest uppercase">参加報告義務なし</span>
-                            </div>
-                        </div>
-
-                        <a href="https://x.com/MAT_J_acrobat" target="_blank" class="hero-btn btn-emerald inline-flex px-12 py-5 text-[11px] font-bold shadow-lg shadow-emerald-500/30">
-                            <i class="fab fa-x-twitter"></i> 入隊見学相談/コンタクト
-                        </a>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- EXTERNAL LINKS VIEW -->
-        <main id="view-links" class="page-view pt-32 px-6">
-            <div class="container mx-auto max-w-4xl">
-                <div class="flex items-center gap-4 mb-12">
-                    <button onclick="showPage('landing')" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h2 class="text-3xl font-normal tracking-widest uppercase text-white" style="font-family: 'Cinzel', serif;">外部リンク</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="glass-card p-8 border-l-4 border-emerald-500/50 bg-white/5 flex flex-col h-full">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center overflow-hidden border border-emerald-500/30">
-                                <img src="https://unavatar.io/twitter/popoyo337" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                <i class="fas fa-code text-emerald-400 hidden"></i>
-                            </div>
-                            <h3 class="text-2xl font-bold text-white">テツたるさん</h3>
-                        </div>
-                        <p class="text-gray-200 text-sm leading-relaxed mb-6 flex-grow">
-                            MAT-Jメンバーであり開発者。Spiticeさんと一緒にゲーム内MODを開発されています。
-                        </p>
-                        <div class="bg-black/20 p-4 rounded-lg mb-8 border border-white/10">
-                            <a href="http://fxjiro.blog117.fc2.com/blog-entry-265.html" target="_blank" class="text-xs text-blue-400 hover:underline break-all block">
-                                最新開発ページ(ブログ) <i class="fas fa-external-link-alt ml-1"></i>
-                            </a>
-                        </div>
-                        <a href="https://youtube.com/@taru-maguro?si=2pcZvNDyQUSb9LIv" target="_blank" class="hero-btn btn-rose py-4 text-[10px]">
-                            <i class="fab fa-youtube text-lg"></i> YouTube Channel
-                        </a>
-                    </div>
-
-                    <div class="glass-card p-8 border-l-4 border-indigo-500/50 bg-white/5 flex flex-col h-full">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-12 h-12 bg-indigo-500/20 rounded-full flex items-center justify-center overflow-hidden border border-indigo-500/30">
-                                <img src="https://unavatar.io/twitter/Yuus_429" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                <i class="fas fa-broadcast-tower text-indigo-400 hidden"></i>
-                            </div>
-                            <h3 class="text-2xl font-bold text-white">ゆーすさん</h3>
-                        </div>
-                        <p class="text-gray-200 text-sm leading-relaxed mb-6 flex-grow">
-                            MSFS/DCSにて航空祭キャスティングを募集しております。MAT-Jの航空祭にも頻繁に参加。確かな実力で空を賑やかに！
-                        </p>
-                        <div class="flex flex-col gap-3">
-                            <a href="https://x.com/Yuus_429" target="_blank" class="hero-btn btn-sky py-4 text-[10px]">
-                                <i class="fab fa-x-twitter text-lg"></i> X (旧Twitter)
-                            </a>
-                            <a href="https://www.youtube.com/@Yuus429" target="_blank" class="hero-btn btn-rose py-4 text-[10px]">
-                                <i class="fab fa-youtube text-lg"></i> YouTube Channel
-                            </a>
-                        </div>
-                    </div>
-                </div>
+        <!-- Maintenance Notice Glass Card -->
+        <div class="glass-card p-8 md:p-14 relative overflow-hidden">
+            
+            <!-- Warning Icon -->
+            <div class="w-20 h-20 mx-auto mb-8 rounded-full flex items-center justify-center border-2 border-amber-500/30 bg-amber-500/10">
+                <i class="fas fa-tools text-3xl text-amber-400"></i>
             </div>
-        </main>
+            
+            <!-- Title -->
+            <h1 class="hero-title text-3xl md:text-5xl font-normal mb-10 uppercase tracking-widest">
+                System Offline
+            </h1>
 
-        <!-- ADDONS VIEW -->
-        <main id="view-addons" class="page-view pt-32 px-6">
-            <div class="container mx-auto max-w-4xl">
-                <div class="flex items-center gap-4 mb-12">
-                    <button onclick="showPage('landing')" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <h2 class="text-3xl font-normal tracking-widest uppercase text-white" style="font-family: 'Cinzel', serif;">MAT-J アドオン一覧</h2>
-                </div>
+            <!-- Message Content -->
+            <div class="space-y-6">
+                <p class="text-base md:text-lg text-gray-200 font-light leading-loose tracking-wider">
+                    只今メンテナンス中のため<br class="md:hidden">閲覧できません。<br>
+                    ご不便をおかけしております。
+                </p>
 
-                <div class="glass-card p-8 md:p-12 mb-8 border-l-4 border-emerald-500/50 bg-emerald-500/5">
-                    <p class="text-xs text-emerald-400 font-bold tracking-widest uppercase mb-2">Notice</p>
-                    <p class="text-sm text-gray-200 leading-relaxed">
-                        こちらのアドオンはMAT-J開発部によって開発されたもので無料でダウンロードできます。<br>
-                        <span class="text-white font-medium italic">作成者：テツたる / Spitice / UKAKA / あひる航空 / izumigame / KE64 </span>
-                    </p>
-                </div>
-
-                <div class="space-y-4 mb-16">
-                    <!-- Item 1 -->
-                    <div class="glass-card p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-white/10 transition group">
-                        <div class="flex-grow">
-                            <div class="flex items-center gap-3 mb-1 flex-wrap">
-                                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">MAT-JスモークMOD V1.8.3</h3>
-                                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">2026/4/22 更新</span>
-                            </div>
-                            <p class="text-xs text-gray-400">編隊飛行に欠かせない多色スモークMOD</p>
-                        </div>
-                        <a href="http://fxjiro.blog117.fc2.com/blog-entry-265.html#spiticesomokemod" target="_blank" class="hero-btn btn-white py-2 px-8 min-w-[140px] text-center">リンク</a>
-                    </div>
-
-                    <!-- Item 2 -->
-                    <div class="glass-card p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-white/10 transition group">
-                        <div class="flex-grow">
-                            <div class="flex items-center gap-3 mb-1 flex-wrap">
-                                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">MAT-J本拠地 馬毛島シーナリー & 航空祭用人物追加</h3>
-                            </div>
-                            <p class="text-xs text-gray-400">私たちのホームベース「馬毛島」のシーナリー</p>
-                        </div>
-                        <a href="http://fxjiro.blog117.fc2.com/blog-entry-265.html#scenery" target="_blank" class="hero-btn btn-white py-2 px-8 min-w-[140px] text-center">リンク</a>
-                    </div>
-
-                    <!-- Item 3 -->
-                    <div class="glass-card p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-white/10 transition group">
-                        <div class="flex-grow">
-                            <div class="flex items-center gap-3 mb-1 flex-wrap">
-                                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">MAT-J隊員リバリー</h3>
-                                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">2026/3/29 更新</span>
-                            </div>
-                            <p class="text-xs text-gray-400">MAT-J隊員塗装データ</p>
-                        </div>
-                        <a href="http://fxjiro.blog117.fc2.com/blog-entry-265.html#mat-j-livery" target="_blank" class="hero-btn btn-white py-2 px-8 min-w-[140px] text-center">リンク</a>
-                    </div>
-
-                    <!-- Item 4 (NEW ADDON) -->
-                    <div class="glass-card p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-white/10 transition group">
-                        <div class="flex-grow">
-                            <div class="flex items-center gap-3 mb-1 flex-wrap">
-                                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">Jaguar:三菱 F-1リバリー</h3>
-                                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-bold">2026/6/2 更新</span>
-                            </div>
-                            <p class="text-xs text-gray-400">三菱 F-1 支援戦闘機のJaguar（ジャギュア）仕様リバリーデータ</p>
-                        </div>
-                        <a href="https://drive.google.com/file/d/1j3RxjnoYygocP548VQM-WSj_ArECrTj6/view" target="_blank" class="hero-btn btn-white py-2 px-8 min-w-[140px] text-center">リンク</a>
-                    </div>
-
-                    <!-- Item 5 -->
-                    <div class="glass-card p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-white/10 transition group">
-                        <div class="flex-grow">
-                            <div class="flex items-center gap-3 mb-1 flex-wrap">
-                                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">天候プリセットMOD(MAT-J)</h3>
-                            </div>
-                            <p class="text-xs text-gray-400">編隊飛行に最適な視程と雲を再現する天候設定ファイル</p>
-                        </div>
-                        <a href="https://drive.google.com/file/d/1Jbmt3oacJXioMf2aXKD-V-bDasD-3SOs/view" target="_blank" class="hero-btn btn-white py-2 px-8 min-w-[140px] text-center">リンク</a>
-                    </div>
-
-                    <!-- Item 6 -->
-                    <div class="glass-card p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:bg-white/10 transition group">
-                        <div class="flex-grow">
-                            <div class="flex items-center gap-3 mb-1 flex-wrap">
-                                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">Spitice補助リプレイツール</h3>
-                            </div>
-                            <p class="text-xs text-gray-400">MAT-J編隊飛行リプレイツール ※リンク先「Mint Replay」をご覧ください。</p>
-                        </div>
-                        <a href="http://fxjiro.blog117.fc2.com/blog-entry-265.html#replay" target="_blank" class="hero-btn btn-white py-2 px-8 min-w-[140px] text-center">リンク</a>
-                    </div>
-                </div>
+                <p class="text-base md:text-lg text-gray-200 font-light leading-loose tracking-wider">
+                    6/28 中の完成を目指しております。
+                </p>
             </div>
-        </main>
-
-        <footer class="py-16 text-center text-[10px] text-gray-400 border-t border-white/10">
-            <p class="tracking-[0.4em] uppercase mb-2 text-gray-300">Formation Flight Team MAT-J</p>
-            <p class="font-light">© 2024 MSFS Acrobat Team Japan. All Rights Reserved.</p>
-        </footer>
+        </div>
+        
+        <!-- Footer Info -->
+        <div class="mt-8 text-[9px] text-gray-500 tracking-[0.3em] uppercase">
+            © 2024 MSFS Acrobat Team Japan.
+        </div>
     </div>
 
-    <script>
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = document.getElementById('menu-icon');
-
-        function toggleMenu() {
-            const isActive = mobileMenu.classList.toggle('active');
-            menuIcon.classList.toggle('fa-bars', !isActive);
-            menuIcon.classList.toggle('fa-times', isActive);
-            document.body.style.overflow = isActive ? 'hidden' : 'auto';
-        }
-
-        function closeMenu() {
-            mobileMenu.classList.remove('active');
-            menuIcon.classList.add('fa-bars');
-            menuIcon.classList.remove('fa-times');
-            document.body.style.overflow = 'auto';
-        }
-
-        menuToggle.addEventListener('click', toggleMenu);
-
-        function showPage(pageId, sectionId = null) {
-            document.querySelectorAll('.page-view').forEach(view => {
-                view.classList.remove('active');
-            });
-
-            const target = document.getElementById(`view-${pageId}`);
-            if (target) {
-                target.classList.add('active');
-                window.scrollTo(0, 0);
-            }
-
-            if (sectionId) {
-                setTimeout(() => {
-                    const section = document.getElementById(sectionId);
-                    if (section) {
-                        section.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }, 100);
-            }
-        }
-
-        function scrollInLanding(sectionId) {
-            showPage('landing', sectionId);
-        }
-
-        const introOverlay = document.getElementById('video-intro');
-        const mainContent = document.getElementById('main-content');
-        const videoElement = document.getElementById('intro-video-element');
-
-        function exitIntro() {
-            introOverlay.style.opacity = '0';
-            introOverlay.style.visibility = 'hidden';
-            mainContent.style.visibility = 'visible';
-            mainContent.style.opacity = '1';
-            document.body.style.overflow = 'auto'; 
-            setTimeout(() => {
-                if(videoElement) videoElement.pause();
-            }, 1000);
-        }
-
-        if (videoElement) {
-            videoElement.onended = exitIntro;
-            videoElement.onerror = exitIntro;
-        }
-
-        const rawMembers = [
-            { name: "syogo", role: "創始者", x: "syogo_295" },
-            { name: "KE64", role: "創始者", x: "ke64j" },
-            { name: "Georgesaiching (G隊長)", role: "リーダー", x: "GeorgeSaiching", yt: "https://youtube.com/@gsaiching?si=2V9vX737MG2Vc2v5" },
-            { name: "Duck1954 (DUCK)", role: "リーダー", x: "1954Duck", yt: "https://youtube.com/@duck19540630?si=IeX24K9ygpGgPMwh" },
-            { name: "Izumigame", role: "開発/リーダー", x: "izumigame_fs", yt: "https://youtube.com/@izumigame-k6w?si=QT07GaxHDm9zfQPP" },
-            { name: "テツたる", role: "システム開発", x: "popoyo337", yt: "https://youtube.com/@taru-maguro?si=JkwA2UYIZmDV11l6" },
-            { name: "HAGALAZ13", role: "リーダー", x: "HAGALAZ_13" },
-            { name: "Spitice", role: "システム開発", x: "spitice0" },
-            { name: "あひる航空", role: "塗装開発/広報", x: "Bobwat131", yt: "https://www.youtube.com/@ahiru_airlines" },
-            { name: "ぽぴ", role: "広報/サイト運営", x: "AssembledPoppy", yt: "https://youtube.com/@asembledpoppy?si=X7dM3swPzqqCCeJd_" },
-            { name: "DELTA", role: "広報", x: "DeltaVRC", yt: "https://youtube.com/@deltaairforce?si=U9ocrCK9ML3tF9w9" },
-            { name: "UKAKA", role: "演目用作成", x: "ukaka5656", yt: "https://youtube.com/@ukaka5656?si=dgvYLFIgGWPwts6W" },
-            { name: "ロンコン", role: "メンバー", x: "qW67J81t1DxZJ8X" },
-            { name: "taktak1956", role: "メンバー", x: "taktak1956" },
-            { name: "BATAKEN1852", role: "メンバー", x: "BATAKEN1852" },
-            { name: "Speedair one 🔰", role: "メンバー", x: "speedairone" },
-            { name: "ｼﾅﾓｿ", role: "メンバー", x: "snm0S0", yt: "https://youtube.com/@snm0s0?si=03ID6nZGgM3kpmbb" },
-            { name: "あちゅパパ 🔰", role: "メンバー", x: "EEguchi55" },
-            { name: "ぽよぽんRW", role: "メンバー", x: "PoyoponRW75217" },
-            { name: "Ponchan", role: "メンバー", x: "mutsumi01210" },
-            { name: "そらこ♪nao", role: "メンバー", x: "sora_sky2022" }
-        ];
-
-        const members = rawMembers.map(m => ({ ...m, role: `MAT-J Member / ${m.role}` }));
-
-        const maneuvers = [
-            { id: "m1", name: "離陸滑走開始", rw: "平行", smk: "無し", signal: "エアブレーキ開 ⇒ 閉", proc: "フラップ1段下げ、ホイールブレーキオン後スロットル92%に合わせ、リーダーのエアブレーキが閉まった瞬間にブレーキオフする。パーキングブレーキオンの状態でリーダーを方向を見て、エアブレーキが閉じた瞬間にブレーキリリースをする。", video: "takeoffbrake.mp4" },
-            { id: "m2", name: "ダーティーローパス", rw: "直角", smk: "白SMK", signal: "離陸後ギア・フラップ下げのまま基本隊形で進入", proc: "ローパス後のリーダーのSMKオフ・ギアアップ・フラップ上げにタイミングを合わせる。" },
-            { id: "m3", name: "ファンブレーク", rw: "斜行", smk: "無し", signal: "無し, リーダー旋回開始で基本隊形へ", proc: "間1mの基本隊形で左後方から進入、3G右旋回で右後方へ抜ける。" },
-            { id: "m4", name: "バレルロール", rw: "斜め", smk: "白SMK", signal: "基本隊形でRW手前から白SMKオン上昇開始", proc: "リーダーとの位置合わせに集中" },
-            { id: "m5", name: "上方開花", rw: "直角", smk: "白SMK", signal: "RW手前で白SMKオン 基本隊形進入", proc: "垂直上昇の姿勢から見て、1>上、2>左、3>右、4>下、5>左下、6>右下、7>左上、8>右上へ開いて水平時にSMKオフ、15秒後逆インメルマンしてRW中央で交差、対向は左側通行" },
-            { id: "m6", name: "鬼灯（ほおずき）", rw: "直角", smk: "無し", signal: "周回中に赤・緑SMKの交互出し 基本隊形進入", proc: "垂直上昇の姿勢時に赤SMKオン。その姿勢から見て、1>上、2>左、3>右、4>下、5>左下、6>右下、7>左上、8>右上へ開く、9は緑で垂直にへたを描く。1〜8はハートの要領で真下に集結後" },
-            { id: "m7", name: "ボントンロール", rw: "斜め", smk: "白SMK", signal: "周回中に赤SMK+ロール合図", proc: "合図で広めワイドデルタ隊形へ変更、RW直上のリーダーSMKオフから0.5秒後SMKオフ、1秒後に右1回転ロール" },
-            { id: "m8", name: "ワイドトゥデルタループ", rw: "直角", smk: "白SMK", signal: "前のボントンとセット", proc: "ボントン後のワイド傘型(V字)でエプロン後方からRW低空通過後ループ上昇しつつ通常傘型(V字)へ変形、ループ頂点で変形終了後引き起こし" },
-            { id: "m9", name: "反転レインフォール", rw: "直角", smk: "緑SMK", signal: "前のボントンとセット/周回中に緑SMK点滅ありは反転RF", proc: "ボントン後のワイド傘型(V字)で直角進入、RW通過後ループ上昇しながら頂点で通常V字デルタに集合、下りの垂直姿勢 of 各機180度ロール後15度間隔で横に開きつつ引き起こし、滑走路通過", image: "sunrise.jpg" },
-            { id: "m10", name: "ループ", rw: "平行", smk: "白SMK", signal: "平行進入+白SMK", proc: "ループ回数はリーダーの気分次第なので次も回るかよく見る" },
-            { id: "m11", name: "バーティカルキューピッド", rw: "直角", smk: "無し", signal: "周回中に赤の長SMK+エアブレーキ開", proc: "リーダー合図で奇数は1番機の後ろ、偶数は2番機の後ろの2列縦隊へ隊形変更、RW直上の垂直上昇姿勢のタイミングで白SMKオン, RWと平行に奇数は右、偶数は左に開く、矢は有志がRW水平通過後に後退してハートに届く" },
-            { id: "m12", name: "スタークロス", rw: "南⇒北", smk: "白", signal: "周回中に黄の長SMK、真南から真北方向へ傘型(V字)隊形で進入/RW上で下方開花", proc: "下方開花で1>360、2>288、3>072、5>216、6>144に散開後水平時にSMKオフ、10秒後インメルマンで折り返し約5000ftに上昇、1>198、2>126、3>270、5>054、6>342方向に向かい白SMKオン、1は5、2は6、3は2、5は3、6は1のSMKと交差位置でオフ", image: "star.jpg" },
-            { id: "m13", name: "レベルオープナー", rw: "直角", smk: "白", signal: "周回中に緑の長SMK+ラダーで尻振り", proc: "尻振り合図で傘型(V字)隊形へ、リーダー白SMKの1秒前オフからオンのタイミングで各列15度刻みで外側に水平に開く。R/W通過後SMKオフ", image: "sunrise.jpg" },
-            { id: "m14", name: "サンライズ", rw: "直角", smk: "白", signal: "周回中に緑の長SMK+翼左右振り", proc: "RW手前でループ後、水平から長機の上昇合図で横はオープナーと同じ、縦はリーダー30度、2・3は15度で上昇、5・6は高度変えない", image: "sunrise.jpg" },
-            { id: "m15", name: "チェンジオーバーターン", rw: "平行", smk: "白", signal: "周回中に白・赤のSMKの交互出し後、白SMKで進入時に1秒間赤SMK", proc: "課目合図で機番順のトレイル隊形へ。進入時の赤SMKの5秒後に右に水平旋回しつつワイドV字隊形へ、前から2はV字2へ、3はV字3へ、4はV字5へ、5はV字6に移動、右360度水平旋回の180度時の赤SMK合図で密集隊形へ徐々に変形開始、RW上で変形終了。" },
-            { id: "m16", name: "チェンジオーバーループ", rw: "平行", smk: "白", signal: "周回中に白・緑のSMKの交互出し後、白SMKで進入時に1秒間緑SMK", proc: "合図で機番順のトレイル隊形（縦一列）へ変形、RW進入時の緑SMKの5秒後目安でループ開始、一旦広めデルタへ変形直後タイトデルタへ変形開始、頂点目安で変形終了。ループ降下しつつデルタのままひねり進入方向のRW直角方向へ引き起こしつつ降下" },
-            { id: "m17", name: "360°ターン", rw: "平行", smk: "無し", signal: "RW上で白SMKオン+バンク開始", proc: "リーダーとの位置合わせに集中" },
-            { id: "m18", name: "下方開花", rw: "直角", smk: "白", signal: "周回中に大きく翼振り（左右）基本隊形で進入", proc: "RW通過後ループ開始、頂点で白SMKオン、姿勢指示器の垂直降下のタイミングで、各自の姿勢から見て上方開花と同じ方向に開く、ロリコンやCBの前に行う場合が多い", image: "kaika.jpg" },
-            { id: "m19", name: "レインフォール", rw: "直角", smk: "白", signal: "周回中に緑SMK点滅、傘型(V字)隊形へ", proc: "傘型(V字)隊形で直角進入、滑走路手前のループの下りの垂直姿勢のタイミングで15度間隔で横に開きつつ引き起こし" },
-            { id: "m20", name: "ローリングコンバットピッチ", rw: "平行", smk: "白", signal: "周回中にエルロンで翼振り（左）", proc: "合図で左エシュロン隊形（リーダー右で機番順斜め一列）に隊形変更、RW上で右にゆっくりバンク開始しバンク角90度で270度右ロール、左に180度の同高度旋回終了時にSMKオフ" },
-            { id: "m21", name: "コンバットブレイク", rw: "平行", smk: "無し", signal: "周回中にエルロンで翼振り（右）", proc: "合図で右エシュロン隊形（リーダー右に機番順の斜め一列）に隊形変更、SMKなしで進入、リーダーが左離脱から3秒間隔で順に離脱" },
-            { id: "m22", name: "コンバットブレイク（万博式）", rw: "平行", smk: "白", signal: "周回中に翼振り（右）+白SMK", proc: "合図で右エシュロン隊形（リーダー右に機番順の斜め一列）に隊形変更、白SMK有りで進入、リーダーがSMKオフ後1秒後に離脱、後続は同様に3秒間隔で順に離脱" },
-            { id: "m23", name: "着陸準備", rw: "平行", smk: "無し", signal: "減速開始時に長白SMK", proc: "リーダー白SMKオンで減速開始＞SMKオフでギア・フラップ下げ" },
-            { id: "m24", name: "飛行中集合合図", rw: "隊形変換", smk: "白SMK", signal: "周回中に白SMK点滅", proc: "リーダーが集合中減速の場合、点滅間隔短くからオフで通常速度へ" },
-            { id: "m25", name: "傘型(V字)隊形合図", rw: "隊形変換", smk: "無し", signal: "周回中に緑SMKを出しラダー尻振り", proc: "最多の9機の場合、前右から1列目>1、2列目>2.3、3列目>5.6、4列目>7.8、5列目>4.9が入る。" },
-            { id: "m26", name: "ワイドV字デルタ合図", rw: "隊形変換", smk: "無し", signal: "周回中にエルロンロール", proc: "各機のポジションは上記のV字デルタと同じ。ボントン（赤SMKあり）と間違えやすいので注意。" },
-            { id: "m27", name: "次課目をレインボーSMK", rw: "カラー演出", smk: "レインボー", signal: "周回中カラーSMKを3色以上連続出し", proc: "1>緑、2>黄、3>青、5>赤、6>ピンク。※4番機は欠番" },
-            { id: "m28", name: "トラブル発生で離脱", rw: "緊急", smk: "赤(長)", signal: "赤の長SMK ＋ 離脱", proc: "離脱した編隊ポジションの後機が穴埋め", isEmergency: true }
-        ];
-
-        function getCardBorder(item) {
-            if (item.isEmergency) return 'border-color: #ef4444; border-width: 2px;';
-            if (item.name.includes("レインボー")) {
-                return 'border-image: linear-gradient(to bottom right, #4ade80, #fbbf24, #60a5fa, #f87171, #ec4899) 1; border-style: solid;';
-            }
-            const signalText = item.signal;
-            const colorMap = { '赤': '#f87171', '緑': '#4ade80', '白': '#ffffff', '黄': '#fbbf24', '青': '#60a5fa' };
-            let foundColors = [];
-            if (signalText.includes('赤')) foundColors.push(colorMap['赤']);
-            if (signalText.includes('緑')) foundColors.push(colorMap['緑']);
-            if (signalText.includes('白')) foundColors.push(colorMap['白']);
-            if (signalText.includes('黄')) foundColors.push(colorMap['黄']);
-            if (signalText.includes('青')) foundColors.push(colorMap['青']);
-            foundColors = [...new Set(foundColors)];
-            if (foundColors.length === 0) return 'border-color: rgba(255,255,255,0.2);';
-            if (foundColors.length === 1) return `border-color: ${foundColors[0]};`;
-            return `border-image: linear-gradient(to bottom right, ${foundColors.join(', ')}) 1; border-style: solid;`;
-        }
-
-        function init() {
-            const memberList = document.getElementById('member-list');
-            if(memberList) {
-                memberList.innerHTML = members.map(m => {
-                    const avatarUrl = m.x ? `https://unavatar.io/twitter/${m.x}` : null;
-                    return `
-                    <div class="glass-card p-4 flex items-center justify-between border-l-2 border-blue-400 hover:bg-white/10 transition group text-white">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-gray-300 group-hover:text-blue-400 transition overflow-hidden">
-                                ${avatarUrl ? 
-                                    `<img src="${avatarUrl}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<i class=\'fas fa-user-pilot text-lg\'></i>'">` : 
-                                    `<i class="fas fa-user-pilot text-lg"></i>`
-                                }
-                            </div>
-                            <div>
-                                <div class="text-sm font-light tracking-widest mb-1 uppercase">${m.name}</div>
-                                <div class="text-[9px] text-gray-400 uppercase font-bold tracking-widest">${m.role}</div>
-                            </div>
-                        </div>
-                        ${m.yt ? `<a href="${m.yt}" target="_blank" class="text-gray-400 hover:text-red-400 transition-colors px-2"><i class="fab fa-youtube text-lg"></i></a>` : ''}
-                    </div>
-                `}).join('');
-            }
-
-            const signalGrid = document.getElementById('signal-grid');
-            if(signalGrid) {
-                signalGrid.innerHTML = maneuvers.map(item => {
-                    const borderStyle = getCardBorder(item);
-                    const emergencyClass = item.isEmergency ? 'emergency-pulse' : 'hover:bg-white/15';
-                    return `
-                    <button onclick="document.getElementById('${item.id}').scrollIntoView({behavior:'smooth'})" 
-                            class="glass-card signal-card p-4 text-left ${emergencyClass} transition flex flex-col gap-1"
-                            style="${borderStyle}">
-                        <div class="text-[10px] ${item.isEmergency ? 'text-red-300' : 'text-gray-200'} font-bold uppercase tracking-widest">${item.name}</div>
-                        <div class="text-xs text-gray-100 font-light leading-tight">${item.signal}</div>
-                    </button>
-                    `;
-                }).join('');
-            }
-
-            const detailList = document.getElementById('maneuver-details');
-            if(detailList) {
-                detailList.innerHTML = maneuvers.map(item => `
-                    <div id="${item.id}" class="glass-card p-6 border-l-4 ${item.isEmergency ? 'border-red-600 bg-red-950/20' : 'border-blue-500 hover:border-blue-300'} transition text-white">
-                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-                            <h3 class="font-normal tracking-widest text-xl uppercase ${item.isEmergency ? 'text-red-300' : 'text-white'}">${item.name}</h3>
-                            <span class="text-[9px] ${item.isEmergency ? 'bg-red-500/30 text-red-100' : 'bg-white/15 text-gray-200'} px-3 py-1 rounded-full font-bold tracking-[0.2em] uppercase">進入: ${item.rw} / SMK: ${item.smk}</span>
-                        </div>
-                        ${item.video ? `
-                            <div class="mb-6 overflow-hidden rounded-xl border border-white/10 shadow-2xl bg-black">
-                                <video src="${item.video}" autoplay muted loop playsinline class="w-full h-auto"></video>
-                            </div>
-                        ` : ''}
-                        ${item.image ? `
-                            <div class="mb-6 overflow-hidden rounded-xl border border-white/10 shadow-2xl bg-black/40">
-                                <img src="${item.image}" alt="${item.name}" class="w-full h-auto block" onerror="this.parentElement.style.display='none'">
-                            </div>
-                        ` : ''}
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[12px]">
-                            <div class="${item.isEmergency ? 'bg-red-500/10 border-red-500/30' : 'bg-white/5 border-white/15'} p-4 rounded-xl border">
-                                <div class="${item.isEmergency ? 'text-red-300' : 'text-amber-400'} font-bold mb-2 uppercase tracking-widest text-[9px]">Signal (リーダーの合図)</div>
-                                <div class="font-light leading-relaxed text-white">${item.signal}</div>
-                            </div>
-                            <div class="bg-white/5 p-4 rounded-xl border border-white/15">
-                                <div class="text-emerald-300 font-bold mb-2 uppercase tracking-widest text-[9px]">Procedure (手順)</div>
-                                <div class="text-gray-100 leading-relaxed font-light">${item.proc}</div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        window.addEventListener('load', init);
-    </script>
 </body>
 </html>

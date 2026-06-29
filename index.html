@@ -288,11 +288,11 @@
                         <ul class="space-y-3 text-xs md:text-sm text-gray-300 font-light">
                             <li class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 border-b border-white/5 pb-2">
                                 <span class="text-gray-400 font-mono text-[10px] sm:text-xs">2026/06/19</span>
-                                <span>アドオン一覧に三菱F-1(KE64)を追加しました。演目一覧レインフォールに画像添付しました。</span>
+                                <span>演目一覧9演目の詳細内容を一部変更致しました。(緑SMK散開系、バーティカルキューピッド、鬼灯、ボントンロール、ワイドトゥデルタループ、ファンブレーク、ダーティーローパス)</span>
                             </li>
                             <li class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 border-b border-white/5 pb-2">
-                                <span class="text-gray-400 font-mono text-[10px] sm:text-xs">20XX/XX/XX</span>
-                                <span>「更新内容書き込み用空欄」</span>
+                                <span class="text-gray-400 font-mono text-[10px] sm:text-xs">2026/06/19</span>
+                                <span>アドオン一覧に三菱F-1(KE64)を追加しました。演目一覧レインフォールに画像添付しました。</span>
                             </li>
                             <li class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
                                 <span class="text-gray-400 font-mono text-[10px] sm:text-xs">2026/06/05</span>
@@ -693,7 +693,7 @@
         const maneuvers = [
             { id: "m1", name: "離陸滑走開始", rw: "平行", smk: "無し", signal: "エアブレーキ開 ⇒ 閉", proc: "フラップ1段下げ、ホイールブレーキオン後スロットル92%に合わせ、リーダーのエアブレーキが全閉の瞬間にブレーキオフする。パーキングブレーキオンの状態でリーダーを方向を見て、エアブレーキが閉じた瞬間にブレーキリリースをする。(リーダーは計器全閉表示でブレーキリリース)", video: "takeoffbrake.mp4" },
             { id: "m2", name: "ダーティーローパス", rw: "直角", smk: "白SMK", signal: "離陸後ギア・フラップ下げのまま基本隊形で進入", proc: "基本隊形で航過する。リーダーのSMKオフ後、ギアアップ。ギアレバーランプが消灯してからフラップを上げる。密集隊形維持" },
-            { id: "m3", name: "ファンブレーク", rw: "斜行", smk: "無し", signal: "エルロンロールで小刻みに左右に振る⇒密集隊形(機体間隔狭)の合図。その後、滑走路斜め進入。", proc: "エプロン(観客席)で編隊の背面を見せるように滑走路に対して弧を描くような航跡を取る。リーダ－はスロットル開度92%程度で400knot以上/300ft前後の高度維持のまま航過するため、速度変化と密集隊形(間隔狭)維持に集中。" },
+            { id: "m3", name: "ファンブレーク", rw: "斜行", smk: "無し", signal: "エルロンロールで小刻みに左右に振る⇒密集隊形(機体間隔狭)の合図。その後、滑走路斜め進入。", proc: "エプロン(観客席)で編隊の背面を見せるように滑走路に対して弧を描くような航跡を取る。リーダ－はスロットル開度92%程度で400knot以上/300ft前後の高度維持のまま航過するため、速度変化と密集隊形(間隔狭)維持に集中。バンク角は60°-80°" },
             { id: "m4", name: "バレルロール", rw: "斜め", smk: "SMK", signal: "基本隊形でRW手前から白SMKオン上昇開始", proc: "リーダーとの位置合わせに集中" },
             { id: "m5", name: "上方開花", rw: "直角", smk: "SMK", signal: "RW手前で白SMKオン 基本隊形進入", proc: "垂直上昇の姿勢から見て、1>上、2>左、3>右、4>下、5>左下、6>右下、7>左上、8>右上へ開いてから5秒後にSMKオフ、水平状態から15秒後にスプリットSしてRUNWAY中央で高度2~300ftで交差。対向は左側通行。9番機は9番機は開かずにバーティカルクライムロール(垂直方向に向かってスロットル全開ロール)してその後SMKオフし交差はせずにその後合流する。", image: "ue.jpg" },
             { id: "m6", name: "鬼灯（ほおずき）", rw: "直角", smk: "無し", signal: "周回中に赤・緑SMKの交互出し 上方開花と同じ滑走路進入。基本隊形進入", proc: "垂直上昇の姿勢時にリーダー赤SMKオンで各機も赤SMKオン。インメルマンターンせずにそのまま♡を描くように降りていく。その姿勢から見て、1>上、2>左、3>右、4>下、5>左下、6>右下、7>左上、8>右上へ開く、9は緑で垂直にへたを描く。※バーティカルキューピッド機動応用技" },

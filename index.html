@@ -721,8 +721,6 @@
             { id: "m28", name: "トラブル発生で離脱", rw: "緊急", smk: "赤(長)", signal: "赤の長SMK ＋ 離脱", proc: "離脱した編隊ポジションの後機が穴埋め", isEmergency: true }
         ];
 
-        const members = rawMembers.map(m => ({ ...m, role: `MAT-J Member / ${m.role}` }));
-
         function getCardBorder(item) {
             if (item.isEmergency) return 'border-color: #ef4444; border-width: 2px;';
             if (item.name.includes("レインボー") || (item.smk && item.smk.includes("レインボー"))) {
